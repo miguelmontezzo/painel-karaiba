@@ -24,7 +24,7 @@
       width:100%;
       max-width:1200px;
       margin:0 auto;
-      padding:12px;
+      padding:16px; /* Mais espaçamento inicial */
     }
     
     /* BARRA SUPERIOR */
@@ -116,8 +116,8 @@
       background:var(--card);
       border:1px solid var(--border);
       border-radius:12px;
-      padding:16px;
-      margin-bottom:16px;
+      padding:24px; /* Mais padding interno para respiro */
+      margin-bottom:24px; /* Mais espaçamento entre cards */
       box-shadow:0 2px 8px rgba(16,24,40,.05);
     }
     
@@ -168,11 +168,11 @@
     .kpis{
       display:grid;
       grid-template-columns:1fr 1fr;
-      gap:12px;
-      margin:16px 0;
+      gap:16px; /* Mais gap entre KPIs */
+      margin:24px 0; /* Mais margem vertical */
     }
     .kpi h3{
-      margin:0 0 8px;
+      margin:0 0 12px; /* Mais espaçamento entre título e valor */
       color:var(--muted);
       font-size:12px;
       font-weight:600;
@@ -183,13 +183,16 @@
       font-weight:800;
       font-size:20px;
       color:var(--text);
+      margin-bottom:4px; /* Espaçamento inferior para respiro */
     }
     
     /* GRID LAYOUTS */
     .grid{
       display:grid;
       grid-template-columns:1fr;
-      gap:16px;
+      gap:20px; /* Gap otimizado para mobile */
+      width:100%;
+      overflow:hidden; /* Evita overflow horizontal */
     }
     
     /* TABELAS MOBILE FLUIDAS */
@@ -199,15 +202,26 @@
       margin:-16px;
       border-radius:12px;
       box-shadow:0 2px 8px rgba(0,0,0,0.1);
+      max-height:350px; /* Altura padrão para mobile */
     }
     
-    /* WRAPPER DE SCROLL HORIZONTAL */
+    /* ALTURAS ESPECÍFICAS PARA DIFERENTES TABELAS */
+    .table-container.table-produtos{
+      max-height:350px;
+    }
+    
+    .table-container.table-pedidos{
+      max-height:360px;
+    }
+    
+    /* WRAPPER DE SCROLL HORIZONTAL E VERTICAL */
     .table-scroll{
       overflow-x:auto;
-      overflow-y:hidden;
+      overflow-y:auto; /* Permitir scroll vertical também */
       -webkit-overflow-scrolling:touch;
       padding:0;
       position:relative;
+      max-height:400px; /* Altura máxima para ativar scroll */
     }
     
     /* INDICADORES VISUAIS DE SCROLL */
@@ -251,8 +265,8 @@
       width:100%;
       border-collapse:separate;
       border-spacing:0;
-      font-size:14px;
-      min-width:700px;
+      font-size:13px; /* Fonte menor para mobile */
+      min-width:600px; /* Largura mínima reduzida */
       background:#fff;
       border-radius:12px;
       overflow:hidden;
@@ -266,13 +280,14 @@
       position:sticky;
       top:0;
       z-index:2;
-      padding:16px 12px;
+      padding:16px 12px; /* Mais padding para respiro */
       text-align:left;
       text-transform:uppercase;
-      font-size:12px;
-      letter-spacing:0.5px;
+      font-size:11px; /* Fonte menor para mobile */
+      letter-spacing:0.3px;
       box-shadow:0 2px 4px rgba(0,0,0,0.1);
       border-bottom:none;
+      line-height:1.4; /* Mais altura de linha */
     }
     
     /* PRIMEIRA COLUNA FIXA */
@@ -291,11 +306,14 @@
     /* CÉLULAS DE DADOS */
     td{
       background:#fff;
-      padding:16px 12px;
+      padding:16px 12px; /* Mais padding para respiro */
       border-bottom:1px solid #e2e8f0;
-      font-size:14px;
+      font-size:13px; /* Fonte menor para mobile */
       color:var(--text);
       vertical-align:middle;
+      line-height:1.5; /* Mais altura de linha para respiro */
+      word-wrap:break-word; /* Quebra palavras longas */
+      max-width:150px; /* Largura máxima para controlar colunas */
     }
     
     /* LINHAS ALTERNADAS */
@@ -322,11 +340,20 @@
     }
     
     /* COLUNAS ESPECÍFICAS */
-    td:nth-child(6), /* Total */
-    th:nth-child(6){
+    td:nth-child(6), /* Total - células de dados */
+    th:nth-child(6){ /* Total - header */
       font-weight:700;
       text-align:right;
+    }
+    
+    /* COR VERDE APENAS PARA CÉLULAS DE DADOS DA COLUNA TOTAL */
+    td:nth-child(6){
       color:var(--green);
+    }
+    
+    /* HEADER DA COLUNA TOTAL PERMANECE BRANCO */
+    th:nth-child(6){
+      color:#fff;
     }
     
     /* INDICADOR DE SCROLL */
@@ -352,19 +379,20 @@
     .btn{
       display:inline-flex;
       align-items:center;
-      gap:8px;
+      gap:6px;
       border:2px solid var(--border);
       background:#fff;
-      border-radius:12px;
-      padding:14px 20px;
+      border-radius:8px; /* Menor no mobile */
+      padding:10px 14px; /* Padding menor para mobile */
       cursor:pointer;
-      font-size:15px;
+      font-size:13px; /* Fonte menor no mobile */
       font-weight:600;
       transition:all 0.2s ease;
       white-space:nowrap;
-      min-height:48px;
+      min-height:40px; /* Altura menor no mobile */
       box-shadow:0 1px 3px rgba(0,0,0,0.1);
       touch-action:manipulation;
+      flex-shrink:0; /* Evita compressão */
     }
     .btn:hover{
       background:#f8f9fa;
@@ -381,15 +409,15 @@
     .pedidos-grid{
       display:grid;
       grid-template-columns:1fr;
-      gap:16px;
-      margin-top:16px;
+      gap:20px; /* Mais gap entre cards de pedidos */
+      margin-top:24px; /* Mais margem superior */
     }
     
     .pedido-card{
       background:#fff;
       border:1px solid var(--border);
       border-radius:16px;
-      padding:20px;
+      padding:24px; /* Mais padding interno para respiro */
       box-shadow:0 2px 8px rgba(16,24,40,.06);
       transition:all 0.3s ease;
       position:relative;
@@ -405,7 +433,7 @@
       display:flex;
       justify-content:space-between;
       align-items:flex-start;
-      margin-bottom:16px;
+      margin-bottom:20px; /* Mais espaçamento após header */
     }
     
     .pedido-time{
@@ -433,20 +461,20 @@
       font-size:16px;
       font-weight:700;
       color:var(--text);
-      margin-bottom:4px;
+      margin-bottom:8px; /* Mais espaçamento após nome do cliente */
     }
     
     .pedido-info{
       display:grid;
       grid-template-columns:1fr 1fr;
-      gap:12px;
-      margin-bottom:16px;
+      gap:16px; /* Mais gap entre informações */
+      margin-bottom:20px; /* Mais espaçamento após info */
     }
     
     .info-item{
       display:flex;
       flex-direction:column;
-      gap:4px;
+      gap:6px; /* Mais gap entre label e value */
     }
     
     .info-label{
@@ -501,20 +529,23 @@
     .section-header{
       display:flex;
       justify-content:space-between;
-      align-items:center;
-      margin-bottom:16px;
-      flex-wrap:wrap;
+      align-items:flex-start; /* Melhor alinhamento no mobile */
+      margin-bottom:20px;
       gap:12px;
+      min-height:44px; /* Altura mínima para botões */
     }
     .section-header strong{
       font-size:16px;
       color:var(--text);
+      flex:1; /* Ocupa espaço disponível */
+      line-height:1.4;
     }
     .section-controls{
       display:flex;
       gap:8px;
       align-items:center;
       flex-wrap:wrap;
+      flex-shrink:0; /* Impede compressão */
     }
     
     /* SEARCH INPUT */
@@ -550,22 +581,82 @@
     
     /* BREAKPOINTS MOBILE SMALL */
     @media(max-width:375px){
+      .container{padding:12px} /* Padding menor em telas pequenas */
+      .card{padding:16px; margin-bottom:16px} /* Cards mais compactos */
       .bar{padding:12px}
       .bar-text strong{font-size:16px}
       .bar-text div{font-size:12px}
       .pill{padding:6px 10px;font-size:12px}
+      .section-header{margin-bottom:16px}
+      .section-header strong{font-size:15px}
+      .btn{
+        padding:8px 12px; /* Botões menores */
+        font-size:12px;
+        min-height:36px;
+      }
+      .table-container{
+        max-height:300px; /* Altura menor */
+      }
+      .table-scroll{
+        max-height:300px;
+      }
+      table{
+        font-size:12px;
+        min-width:480px; /* Largura menor */
+      }
+      th{
+        padding:8px 6px;
+        font-size:10px;
+      }
+      td{
+        padding:8px 6px;
+        font-size:12px;
+        max-width:100px;
+      }
+      .chart-section{
+        margin-bottom:16px;
+      }
+      .chart-table-grid{
+        gap:16px;
+      }
     }
     
     /* BREAKPOINTS MOBILE LARGE */
-    @media(min-width:414px) and (max-width:639px){
-      .bar{padding:16px 20px}
-      .bar-text strong{font-size:19px}
+    @media(min-width:376px) and (max-width:639px){
       .container{padding:16px}
+      .card{padding:20px; margin-bottom:20px}
+      .bar{padding:16px 20px}
+      .bar-text strong{font-size:18px}
+      .section-header{margin-bottom:18px}
+      .btn{
+        padding:10px 14px;
+        font-size:13px;
+        min-height:40px;
+      }
+      .table-container{
+        max-height:350px;
+      }
+      .table-scroll{
+        max-height:350px;
+      }
+      table{
+        min-width:520px;
+      }
+      td{
+        max-width:130px;
+      }
+      .chart-section{
+        margin-bottom:18px;
+      }
+      .chart-table-grid{
+        gap:18px;
+      }
     }
     
     /* BREAKPOINTS TABLET */
     @media(min-width:640px){
       .container{padding:20px}
+      .card{padding:24px; margin-bottom:24px}
       .filters.card{grid-template-columns:1fr 1fr}
       .kpis{grid-template-columns:repeat(4,1fr)}
       .pedidos-grid{grid-template-columns:1fr 1fr}
@@ -573,23 +664,59 @@
       .kpi .val{font-size:24px}
       .bar{padding:16px 24px}
       .bar-text strong{font-size:20px}
+      .btn{
+        padding:12px 16px;
+        font-size:14px;
+        min-height:44px;
+      }
+      .section-header{
+        margin-bottom:20px;
+      }
+      .grid{
+        gap:24px;
+      }
     }
     
     /* BREAKPOINTS TABLET LARGE */
     @media(min-width:768px){
       .grid{grid-template-columns:1fr 1fr}
       .filters.card{grid-template-columns:repeat(3,1fr)}
-      table{min-width:auto}
+      table{
+        min-width:auto;
+        font-size:14px; /* Fonte normal no desktop */
+      }
       .table-container{
         margin:0;
         padding:0;
         box-shadow:0 2px 8px rgba(0,0,0,0.1);
+        max-height:500px; /* Altura adequada para desktop com scroll */
+      }
+      .table-container.table-produtos{
+        max-height:500px;
+      }
+      .table-container.table-pedidos{
+        max-height:550px; /* Altura maior para tabela de pedidos */
+      }
+      .table-scroll{
+        max-height:500px; /* Altura adequada para desktop */
+        overflow-y:auto; /* Mantém scroll vertical no desktop */
       }
       .scroll-indicator{
         display:none;
       }
       .table-scroll::before{
         display:none;
+      }
+      th{
+        padding:16px 12px; /* Padding normal no desktop */
+        font-size:12px; /* Fonte normal no desktop */
+        position:sticky; /* Mantém sticky no topo para desktop */
+        top:0; /* Fica fixo no topo durante scroll vertical */
+      }
+      td{
+        padding:16px 12px; /* Padding normal no desktop */
+        font-size:14px; /* Fonte normal no desktop */
+        max-width:none; /* Remove limitação de largura */
       }
       th:first-child,
       td:first-child{
@@ -628,14 +755,40 @@
       .desktop-only{display:block}
     }
     
-    /* CHART CONTAINERS */
+        /* CHART CONTAINERS */
     .chart-container{
       height:300px;
       width:100%;
     }
-    
+
     @media(min-width:640px){
       .chart-container{height:320px}
+    }
+    
+    /* SEÇÕES DE CHART E TABLE */
+    .chart-section{
+      margin-bottom:20px; /* Espaçamento otimizado para mobile */
+    }
+    
+    .table-section{
+      margin-top:0; /* Remove margem adicional */
+    }
+    
+    /* GRID CHART-TABLE ESPECÍFICO */
+    .chart-table-grid{
+      gap:20px; /* Gap otimizado para mobile */
+      display:grid;
+      grid-template-columns:1fr; /* Uma coluna no mobile */
+    }
+    
+    @media(min-width:768px){
+      .chart-section{
+        margin-bottom:0; /* Remove margem no desktop */
+      }
+      .chart-table-grid{
+        gap:24px; /* Gap para desktop */
+        grid-template-columns:1fr 1fr; /* Duas colunas no desktop */
+      }
     }
     
     /* MELHORIAS ESPECÍFICAS MOBILE */
@@ -758,20 +911,18 @@
       <!-- SEÇÃO ITENS MAIS PEDIDOS -->
       <section class="card">
         <div class="section-header">
-          <strong>Pratos Mais Pedidos (Cardápio)</strong>
+          <strong>Produtos Mais Pedidos</strong>
           <div class="section-controls">
-            <select id="limiteItens" style="padding:12px 16px;border:2px solid var(--border);border-radius:12px;background:#fff;font-size:15px;min-height:48px">
-              <option value="10" selected>Top 10</option>
-              <option value="15">Top 15</option>
-              <option value="20">Top 20</option>
-            </select>
             <button id="downloadItens" class="btn">📊 Baixar CSV</button>
           </div>
         </div>
         
-        <div class="grid">
-          <div><div id="chart-itens" class="chart-container" style="height:350px"></div></div>
-          <div class="table-container" style="max-height:350px">
+        <div class="chart-section">
+          <div id="chart-itens" class="chart-container" style="height:350px"></div>
+        </div>
+        
+        <div class="table-section">
+          <div class="table-container table-produtos">
             <div class="table-scroll">
               <table>
                 <thead><tr>
@@ -788,18 +939,22 @@
       <section class="card">
         <div class="section-header">
           <strong>Pedidos (amostra filtrada)</strong>
-          <button id="download" class="btn">📄 Baixar CSV</button>
+          <div class="section-controls">
+            <button id="download" class="btn">📄 Baixar CSV</button>
         </div>
-        <div class="table-container" style="max-height:360px">
-          <div class="table-scroll">
+        </div>
+        <div class="table-section">
+          <div class="table-container table-pedidos">
+            <div class="table-scroll">
           <table>
-              <thead><tr>
+                <thead><tr>
               <th>Data</th><th>Cliente</th><th>Bairro</th><th>Pagamento</th><th>Status</th><th>Total (R$)</th>
             </tr></thead>
             <tbody id="tbody"></tbody>
           </table>
+            </div>
+            <div class="scroll-indicator">👈 Deslize para ver mais</div>
           </div>
-          <div class="scroll-indicator">👈 Deslize para ver mais</div>
         </div>
       </section>
     </section>
@@ -812,9 +967,9 @@
                     <div class="section-controls">
             <span id="countHoje" class="pill" style="background:var(--green);color:#fff">0 pedidos</span>
             <button id="refreshHoje" class="btn">🔄 Atualizar</button>
-          </div>
         </div>
-        
+        </div>
+
         <div class="search-container">
           <input id="search" placeholder="Buscar cliente/bairro..."/>
         </div>
@@ -876,7 +1031,7 @@
     selS.innerHTML = '<option value="">Todos</option>'; status.forEach(s=> selS.insertAdjacentHTML('beforeend', `<option>${s}</option>`));
     const dates = DATA.map(d=> new Date(d.data_hora_pedido)); const minD = new Date(Math.min(...dates)); const maxD = new Date(Math.max(...dates));
     q('#start').value = minD.toISOString().slice(0,10); q('#end').value = maxD.toISOString().slice(0,10);
-    ['start','end','bairro','pagamento','statusSel','limiteItens'].forEach(id=> q('#'+id).addEventListener('change', update));
+    ['start','end','bairro','pagamento','statusSel'].forEach(id=> q('#'+id).addEventListener('change', update));
   }
   function applyFilters(){
     const s=q('#start').value, e=q('#end').value, b=q('#bairro').value.trim(), p=q('#pagamento').value.trim(), st=q('#statusSel').value.trim();
@@ -1152,8 +1307,7 @@
   }
 
   function renderItens(rows) {
-    const limite = Number(q('#limiteItens').value) || 10;
-    const itensData = processItens(rows).slice(0, limite);
+    const itensData = processItens(rows); // Mostra todos os itens
     
     // Renderiza tabela
     const tbody = q('#tbodyItens');
