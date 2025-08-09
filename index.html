@@ -7,7 +7,7 @@
   <link rel="icon" type="image/x-icon" href="/favicon.ico">
   
   <!-- PWA Meta Tags -->
-  <meta name="theme-color" content="#4f46e5">
+  <meta name="theme-color" content="#C62828">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Karaíba">
@@ -42,6 +42,64 @@
       max-width:1200px;
       margin:0 auto;
       padding:16px; /* Mais espaçamento inicial */
+    }
+    
+    /* TELA DE CARREGAMENTO PWA */
+    #loadingScreen{
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, var(--red) 0%, var(--red-700) 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      color: white;
+    }
+    
+    .loading-logo{
+      font-size: 48px;
+      font-weight: 800;
+      margin-bottom: 24px;
+      text-align: center;
+      animation: logoFade 2s ease-in-out infinite alternate;
+    }
+    
+    .loading-text{
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 32px;
+      opacity: 0.9;
+    }
+    
+    .loading-spinner{
+      width: 40px;
+      height: 40px;
+      border: 3px solid rgba(255,255,255,0.3);
+      border-top: 3px solid white;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes logoFade {
+      0% { opacity: 0.7; transform: scale(0.95); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .loading-fade-out{
+      animation: fadeOut 0.5s ease forwards;
+    }
+    
+    @keyframes fadeOut {
+      to { opacity: 0; visibility: hidden; }
     }
     
     /* BARRA SUPERIOR */
@@ -1413,6 +1471,13 @@
   </style>
 </head>
 <body>
+  <!-- Tela de Carregamento PWA -->
+  <div id="loadingScreen">
+    <div class="loading-logo">🏪 KARAÍBA</div>
+    <div class="loading-text">Carregando painel...</div>
+    <div class="loading-spinner"></div>
+  </div>
+
   <div class="bar">
     <div class="logo"></div>
     <div class="bar-text">
@@ -2365,8 +2430,42 @@
     }
   }
 
+  // Esconder tela de loading após inicialização
+  setTimeout(() => {
+    hideLoadingScreen();
+  }, 1500); // 1.5 segundos de loading mínimo
+  
   init();
   } // Fim da função initApp
+  
+  // Função para esconder a tela de loading
+  function hideLoadingScreen() {
+    const loadingScreen = document.getElementById('loadingScreen');
+    if (loadingScreen) {
+      loadingScreen.classList.add('loading-fade-out');
+      setTimeout(() => {
+        loadingScreen.style.display = 'none';
+      }, 500);
+    }
+  }
+  
+  // Mostrar loading apenas se for PWA ou primeira visita
+  function showLoadingIfNeeded() {
+    const loadingScreen = document.getElementById('loadingScreen');
+    const isPWA = window.matchMedia('(display-mode: standalone)').matches || 
+                  window.navigator.standalone === true ||
+                  document.referrer.includes('android-app://');
+    
+    if (!isPWA) {
+      // Se não for PWA, esconder loading imediatamente
+      if (loadingScreen) {
+        loadingScreen.style.display = 'none';
+      }
+    }
+  }
+  
+  // Verificar se deve mostrar loading
+  showLoadingIfNeeded();
 
   // Registrar Service Worker para PWA
   if ('serviceWorker' in navigator) {
@@ -2400,7 +2499,7 @@
       position: fixed;
       bottom: 20px;
       right: 20px;
-      background: #4f46e5;
+      background: #C62828;
       color: white;
       padding: 12px 16px;
       border-radius: 8px;
