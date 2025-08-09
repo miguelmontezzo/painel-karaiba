@@ -1,0 +1,503 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Painel Gerencial - Karaíba</title>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --red:#C62828; --red-700:#B71C1C; --green:#2E7D32; --blue:#1E88E5;
+      --bg:#f6f7fb; --card:#ffffff; --text:#0f172a; --muted:#667085; --border:#e6e8ef;
+    }
+    *{box-sizing:border-box} html,body{height:100%} body{margin:0;background:var(--bg);font-family:Inter,system-ui,sans-serif;color:var(--text)}
+    .container{max-width:1200px;margin:0 auto;padding:20px}
+    .bar{background:var(--red);color:#fff;border-radius:0 0 10px 10px;padding:10px 14px;display:flex;align-items:center;gap:12px}
+    .logo{width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,#ff8a80, #ff5252);background-image:url('https://i.ibb.co/Q37KgBh3/Ativo-1-2x.png');background-size:contain;background-repeat:no-repeat;background-position:center;}
+    .pill{padding:6px 10px;border-radius:999px;background:#fff;border:1px solid var(--border);color:var(--muted)}
+    .tabs{display:flex;gap:8px;margin:12px 0}
+    .tab{border:1px solid var(--border);background:#fff;border-radius:10px;padding:8px 12px;cursor:pointer;font-weight:600;color:var(--muted)}
+    .tab.active{background:#fff3f3;border-color:#ffd6d6;color:var(--red-700)}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px;box-shadow:0 2px 8px rgba(16,24,40,.05)}
+    .filters.card{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+    .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:12px 0}
+    .kpi h3{margin:0 0 6px;color:var(--muted);font-size:12px} .kpi .val{font-weight:800;font-size:24px}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .th{background:#f3f4f6}
+    table{width:100%;border-collapse:collapse;font-size:12px} th,td{padding:10px;border-bottom:1px solid var(--border)} th{text-align:left;color:var(--muted)}
+    .btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--border);background:#fff;border-radius:10px;padding:8px 12px;cursor:pointer}
+    .row{display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr 1fr;gap:8px;align-items:center}
+    .row > div{padding:8px 10px;border-bottom:1px solid var(--border);background:#fff;border-radius:10px}
+    .row.header > div{font-weight:700;background:#f3f4f6}
+    @media(max-width:950px){.filters.card{grid-template-columns:1fr 1fr} .kpis{grid-template-columns:1fr 1fr} .grid{grid-template-columns:1fr} .row{grid-template-columns:1fr 1fr 1fr} }
+  </style>
+</head>
+<body>
+  <div class="bar">
+    <div class="logo"></div>
+    <div><strong>Painel de Pedidos • Karaíba</strong><div style="font-size:12px;opacity:.9">Visão clara para o delivery</div></div>
+    <div style="margin-left:auto" id="status" class="pill">Conectando…</div>
+  </div>
+
+  <div class="container">
+    <div class="tabs">
+      <div class="tab active" data-tab="dashboard">Dashboard</div>
+      <div class="tab" data-tab="hoje">Pedidos de Hoje</div>
+    </div>
+
+    <!-- DASHBOARD -->
+    <section id="dashboard" class="tabpane">
+      <section class="card filters">
+        <div><label>Início</label><input id="start" type="date" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:10px"></div>
+        <div><label>Fim</label><input id="end" type="date" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:10px"></div>
+        <div><label>Bairro</label><select id="bairro" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:10px"><option value="">Todos</option></select></div>
+        <div><label>Pagamento</label><select id="pagamento" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:10px"><option value="">Todas</option></select></div>
+        <div><label>Status</label><select id="statusSel" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:10px"><option value="">Todos</option></select></div>
+      </section>
+
+      <section class="kpis">
+        <div class="card kpi"><h3>Pedidos</h3><div id="kpi-pedidos" class="val">—</div></div>
+        <div class="card kpi"><h3>Faturamento</h3><div id="kpi-fat" class="val">—</div></div>
+        <div class="card kpi"><h3>Ticket médio</h3><div id="kpi-ticket" class="val">—</div></div>
+        <div class="card kpi"><h3>% Cartão (Crédito+Débito)</h3><div id="kpi-cartao" class="val">—</div></div>
+      </section>
+
+      <section class="grid">
+        <div class="card"><div id="chart-pedidos" style="height:320px"></div></div>
+        <div class="card"><div id="chart-fat" style="height:320px"></div></div>
+        <div class="card"><div id="chart-bairros" style="height:320px"></div></div>
+        <div class="card"><div id="chart-pagamento" style="height:320px"></div></div>
+      </section>
+
+      <!-- SEÇÃO ITENS MAIS PEDIDOS -->
+      <section class="card" style="margin-top:12px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+          <strong>Pratos Mais Pedidos (Cardápio)</strong>
+          <div style="display:flex;gap:8px;align-items:center">
+            <select id="limiteItens" style="padding:6px 10px;border:1px solid var(--border);border-radius:8px;font-size:12px">
+              <option value="10" selected>Top 10</option>
+              <option value="15">Top 15</option>
+              <option value="20">Top 20</option>
+            </select>
+            <button id="downloadItens" class="btn" style="font-size:12px;padding:6px 10px">Baixar CSV</button>
+          </div>
+        </div>
+        
+        <div class="grid">
+          <div><div id="chart-itens" style="height:350px"></div></div>
+          <div style="overflow:auto;max-height:350px">
+            <table style="font-size:11px">
+              <thead class="th"><tr>
+                <th>#</th><th>Item</th><th>Qtd</th><th>Receita</th>
+              </tr></thead>
+              <tbody id="tbodyItens"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="card" style="margin-top:12px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <strong>Pedidos (amostra filtrada)</strong>
+          <button id="download" class="btn">Baixar CSV</button>
+        </div>
+        <div style="overflow:auto;max-height:360px">
+          <table>
+            <thead class="th"><tr>
+              <th>Data</th><th>Cliente</th><th>Bairro</th><th>Pagamento</th><th>Status</th><th>Total (R$)</th>
+            </tr></thead>
+            <tbody id="tbody"></tbody>
+          </table>
+        </div>
+      </section>
+    </section>
+
+    <!-- PEDIDOS DE HOJE -->
+    <section id="hoje" class="tabpane" style="display:none">
+      <section class="card" style="margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+        <strong style="font-size:16px">Pedidos de Hoje</strong>
+        <div style="display:flex;gap:8px;align-items:center">
+          <input id="search" placeholder="Buscar cliente/bairro..." style="padding:10px;border:1px solid var(--border);border-radius:10px"/>
+          <span id="countHoje" class="pill">0 pedidos</span>
+          <button id="refreshHoje" class="btn">Atualizar</button>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="row header">
+          <div>Hora</div><div>Cliente</div><div>Bairro</div><div>Pagamento</div><div>Status</div><div>Total</div>
+        </div>
+        <div id="listHoje"></div>
+      </section>
+      <div style="color:var(--muted);font-size:12px;margin-top:6px">Atualiza automaticamente a cada 20s</div>
+    </section>
+
+
+
+  </div>
+
+<script type="module">
+  import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+  const supabase = createClient("https://dbepscombakzdvruuxav.supabase.co", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRiZXBzY29tYmFremR2cnV1eGF2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTEzODg5OTEsImV4cCI6MjA2Njk2NDk5MX0.vahd7AyhmuJ22EzpapV237jPQPh4UjL-gt6QMvVRozs", { db: { schema:'public' } });
+  const SOURCE = "pedidos_karaiba";
+
+  // Helpers
+  const q = (s)=>document.querySelector(s);
+  const currency = (v)=> (v==null||isNaN(v)) ? "—" : Number(v).toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
+  const todayStr = ()=> new Date().toISOString().slice(0,10);
+  const toNum = (x)=> Number(String(x).replace('R$','').replace(' ','').replace(',','.'))||0;
+  const normalize = (r)=> ({ ...r, valor_total: toNum(r.valor_total), taxa_entrega: toNum(r.taxa_entrega), data_hora_pedido: r.data_hora_pedido || r.created_at || r.data });
+  const unique = (arr, key)=> [...new Set(arr.map(r=> (r[key]||'').trim()).filter(Boolean))].sort((a,b)=> a.localeCompare(b,'pt-BR'));
+  const groupBy = (arr, keyFn, valFn, agg='sum')=> {
+    const m=new Map();
+    arr.forEach(it=>{ const k=keyFn(it), v=valFn(it); if(!m.has(k)) m.set(k,[]); m.get(k).push(v); });
+    return [...m.entries()].map(([k,vals])=>({key:k, value: agg==='count'? vals.length : vals.reduce((a,b)=>a+(Number(b)||0),0)})).sort((a,b)=> a.key>b.key?1:-1);
+  };
+
+  // Tabs
+  document.querySelectorAll('.tab').forEach(t=> t.addEventListener('click', ()=> {
+    document.querySelectorAll('.tab').forEach(x=> x.classList.remove('active'));
+    t.classList.add('active');
+    const id = t.dataset.tab;
+    document.querySelectorAll('.tabpane').forEach(p=> p.style.display = (p.id===id? 'block':'none'));
+  }));
+
+  // Data state
+  let DATA = [];
+  let timerHoje = null;
+
+  // Dashboard functions
+  function hydrateFilters(){
+    const bairros = unique(DATA,'bairro'), formas = unique(DATA,'forma_pagamento'), status = unique(DATA,'status');
+    const selB = q('#bairro'), selP=q('#pagamento'), selS=q('#statusSel');
+    selB.innerHTML = '<option value="">Todos</option>'; bairros.forEach(b=> selB.insertAdjacentHTML('beforeend', `<option>${b}</option>`));
+    selP.innerHTML = '<option value="">Todas</option>'; formas.forEach(f=> selP.insertAdjacentHTML('beforeend', `<option>${f}</option>`));
+    selS.innerHTML = '<option value="">Todos</option>'; status.forEach(s=> selS.insertAdjacentHTML('beforeend', `<option>${s}</option>`));
+    const dates = DATA.map(d=> new Date(d.data_hora_pedido)); const minD = new Date(Math.min(...dates)); const maxD = new Date(Math.max(...dates));
+    q('#start').value = minD.toISOString().slice(0,10); q('#end').value = maxD.toISOString().slice(0,10);
+    ['start','end','bairro','pagamento','statusSel','limiteItens'].forEach(id=> q('#'+id).addEventListener('change', update));
+  }
+  function applyFilters(){
+    const s=q('#start').value, e=q('#end').value, b=q('#bairro').value.trim(), p=q('#pagamento').value.trim(), st=q('#statusSel').value.trim();
+    const start = s? new Date(s+'T00:00:00') : null, end = e? new Date(e+'T23:59:59') : null;
+    return DATA.filter(r=>{
+      const dt = new Date(r.data_hora_pedido);
+      if(start && dt<start) return false; if(end && dt>end) return false;
+      if(b && (r.bairro||'').trim()!==b) return false;
+      if(p && (r.forma_pagamento||'').trim()!==p) return false;
+      if(st && (r.status||'').trim()!==st) return false;
+      return true;
+    });
+  }
+  function renderKPIs(rows){
+    const pedidos = rows.length;
+    const fat = rows.reduce((a,r)=> a + (Number(r.valor_total)||0),0);
+    const ticket = pedidos? fat/pedidos : 0;
+    const cartao = rows.filter(r=> /(Crédito|Débito)/i.test(r.forma_pagamento||'')).length/(pedidos||1);
+    q('#kpi-pedidos').textContent = pedidos.toLocaleString('pt-BR');
+    q('#kpi-fat').textContent = currency(fat);
+    q('#kpi-ticket').textContent = currency(ticket);
+    q('#kpi-cartao').textContent = (cartao*100).toFixed(1)+'%';
+  }
+  function renderCharts(rows){
+    const byDay = groupBy(rows, r=> String(r.data_hora_pedido).slice(0,10), _=>1, 'count');
+    Plotly.newPlot('chart-pedidos',[{x:byDay.map(d=>d.key), y:byDay.map(d=>d.value), type:'bar'}],{margin:{t:10,l:40,r:10,b:40}, xaxis:{tickangle:-30}, paper_bgcolor:'#fff', plot_bgcolor:'#fff'},{displayModeBar:false});
+    const byDayFat = groupBy(rows, r=> String(r.data_hora_pedido).slice(0,10), r=> Number(r.valor_total)||0, 'sum');
+    Plotly.newPlot('chart-fat',[{x:byDayFat.map(d=>d.key), y:byDayFat.map(d=>d.value), type:'scatter', mode:'lines+markers'}],{margin:{t:10,l:40,r:10,b:40}, xaxis:{tickangle:-30}, paper_bgcolor:'#fff', plot_bgcolor:'#fff'},{displayModeBar:false});
+    const bairros = groupBy(rows, r=> (r.bairro||'—'), _=>1, 'count').sort((a,b)=> b.value-a.value).slice(0,8);
+    Plotly.newPlot('chart-bairros',[{x:bairros.map(d=>d.key), y:bairros.map(d=>d.value), type:'bar'}],{margin:{t:10,l:40,r:10,b:80}, xaxis:{tickangle:-25}, paper_bgcolor:'#fff', plot_bgcolor:'#fff'},{displayModeBar:false});
+    const pay = groupBy(rows, r=> (r.forma_pagamento||'—'), _=>1, 'count');
+    Plotly.newPlot('chart-pagamento',[{labels:pay.map(d=>d.key), values:pay.map(d=>d.value), type:'pie', hole:0.55}],{margin:{t:10,l:10,r:10,b:10}, paper_bgcolor:'#fff', plot_bgcolor:'#fff', legend:{orientation:'h'}},{displayModeBar:false});
+  }
+  function renderTable(rows){
+    const tb = q('#tbody'); tb.innerHTML='';
+    rows.slice(0,500).forEach(r=>{
+      const tr=document.createElement('tr'); const dt=new Date(r.data_hora_pedido).toLocaleString('pt-BR');
+      tr.innerHTML = `<td>${dt}</td><td>${r.nome_cliente||''}</td><td>${r.bairro||''}</td><td>${r.forma_pagamento||''}</td><td>${r.status||''}</td><td>${currency(r.valor_total||0)}`;
+      tb.appendChild(tr);
+    });
+  }
+  function downloadCSV(rows){
+    const headers = ['data_hora_pedido','nome_cliente','bairro','forma_pagamento','status','valor_total'];
+    const lines = [headers.join(',')];
+    rows.forEach(r=>{ const row = headers.map(h=> `"${String(r[h]??'').replaceAll('"','""')}"` ).join(','); lines.push(row); });
+    const blob = new Blob([lines.join('\n')], {type:'text/csv;charset=utf-8;'});
+    const url = URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='pedidos_filtrados.csv'; a.click(); URL.revokeObjectURL(url);
+  }
+  // Cardápio Karaíba - Lista de pratos principais
+  const CARDAPIO_KARAIBA = [
+    'Almoço Karaíba', 'Marmitex',
+    'Parmegiana Karaíba', 'Parmegiana',
+    'Tropeiro Karaibano', 'Tropeiro',
+    'Fish Grill', 'Tilápia Grelhada', 'Tilapia',
+    'Frango 4 Queijos', 'Frango Quatro Queijos',
+    'Chicken Grill', 'Frango Grelhado',
+    'Strogonoff Frango', 'Strogonoff',
+    'Filé à Cavalo', 'Filé a Cavalo',
+    'Filé Molho Madeira', 'Filé Madeira',
+    'Salada Karaíba',
+    'Combo à la Carte', 'Combo La Carte',
+    // Bebidas
+    'Água sem gás', 'Água', 'Agua',
+    'Água com gás', 'Água Gás',
+    'Água tônica', 'Água Tonica', 'Tonica',
+    'H2O Limoneto', 'Limoneto',
+    'Coca Cola', 'Coca-Cola', 'Coca',
+    'Coca Zero', 'Coca-Zero',
+    'Mineiro Baby', 'Mineiro',
+    'Fanta Uva', 'Fanta',
+    'Guaraná', 'Guarana',
+    'Schweppes',
+    'Suco Limão', 'Suco de Limão',
+    'Suco Abacaxi', 'Suco de Abacaxi', 'Abacaxi',
+    'Suco Laranja', 'Suco de Laranja', 'Laranja',
+    'Suco Caju', 'Suco de Caju', 'Caju',
+    'Suco Maracujá', 'Suco de Maracujá', 'Maracuja',
+    'Suco Laranja com Morango', 'Laranja Morango',
+    'Suco Laranja com Acerola', 'Laranja Acerola',
+    'Del Vale Pêssego', 'Del Vale Pessego', 'Pêssego', 'Pessego',
+    'Del Vale Uva', 'Uva'
+  ];
+
+  function parseItens(itensString) {
+    if (!itensString) return [];
+    try {
+      let itens = [];
+      // Tenta diferentes formatos: JSON, separado por vírgula, etc.
+      if (itensString.trim().startsWith('[') || itensString.trim().startsWith('{')) {
+        itens = JSON.parse(itensString);
+      } else {
+        // Se for uma string simples separada por vírgula ou quebra de linha
+        itens = itensString.split(/[,;\n]/).map(item => ({
+          nome: item.trim(),
+          quantidade: 1,
+          preco: 0
+        })).filter(item => item.nome);
+      }
+      
+      // Filtra apenas itens do cardápio
+      return itens.filter(item => {
+        const nomeItem = (item.nome || item.toString()).toLowerCase();
+        return CARDAPIO_KARAIBA.some(prato => 
+          nomeItem.includes(prato.toLowerCase()) || 
+          prato.toLowerCase().includes(nomeItem)
+        );
+      });
+    } catch (e) {
+      // Fallback: trata como string simples e filtra pelo cardápio
+      const itens = itensString.split(/[,;\n]/).map(item => ({
+        nome: item.trim(),
+        quantidade: 1,
+        preco: 0
+      })).filter(item => item.nome);
+      
+      return itens.filter(item => {
+        const nomeItem = item.nome.toLowerCase();
+        return CARDAPIO_KARAIBA.some(prato => 
+          nomeItem.includes(prato.toLowerCase()) || 
+          prato.toLowerCase().includes(nomeItem)
+        );
+      });
+    }
+  }
+
+  // Função para normalizar nomes dos pratos (agrupa variações)
+  function normalizarNomePrato(nome) {
+    const nomeClean = nome.toLowerCase().trim();
+    
+    // Mapeia variações para nomes principais
+    const mapeamento = {
+      'parmegiana karaíba': ['parmegiana', 'parmegiana karaiba'],
+      'tropeiro karaibano': ['tropeiro'],
+      'fish grill': ['tilápia grelhada', 'tilapia', 'tilapia grelhada'],
+      'frango 4 queijos': ['frango quatro queijos', 'frango 4queijos'],
+      'chicken grill': ['frango grelhado'],
+      'strogonoff frango': ['strogonoff'],
+      'filé à cavalo': ['filé a cavalo', 'file a cavalo', 'file à cavalo'],
+      'filé molho madeira': ['filé madeira', 'file madeira', 'file molho madeira'],
+      'almoço karaíba': ['marmitex', 'almoco karaiba'],
+      'combo à la carte': ['combo la carte', 'combo'],
+      'coca cola': ['coca-cola', 'coca'],
+      'coca zero': ['coca-zero'],
+      'água': ['agua'],
+      'água com gás': ['agua com gas', 'água gás'],
+      'água tônica': ['agua tonica', 'tonica'],
+      'guaraná': ['guarana'],
+      'suco de limão': ['suco limão', 'limão'],
+      'suco de laranja': ['suco laranja', 'laranja'],
+      'suco de abacaxi': ['suco abacaxi', 'abacaxi'],
+      'suco de caju': ['suco caju', 'caju'],
+      'suco de maracujá': ['suco maracuja', 'maracuja']
+    };
+    
+    // Procura o nome principal correspondente
+    for (const [principal, variacoes] of Object.entries(mapeamento)) {
+      if (nomeClean.includes(principal) || variacoes.some(v => nomeClean.includes(v))) {
+        return principal.charAt(0).toUpperCase() + principal.slice(1);
+      }
+    }
+    
+    // Se não encontrou mapeamento, retorna o nome original formatado
+    return nome.charAt(0).toUpperCase() + nome.slice(1).toLowerCase();
+  }
+
+  function processItens(rows) {
+    const itensCount = new Map();
+    const itensReceita = new Map();
+    
+    rows.forEach(pedido => {
+      if (!pedido.itens) return;
+      
+      const itens = parseItens(pedido.itens);
+      const valorPedido = Number(pedido.valor_total) || 0;
+      const numItens = itens.length || 1;
+      const valorMedioPorItem = valorPedido / numItens;
+      
+      itens.forEach(item => {
+        const nomeOriginal = item.nome || item.toString();
+        const nomeNormalizado = normalizarNomePrato(nomeOriginal);
+        const quantidade = Number(item.quantidade) || 1;
+        
+        // Conta quantidade
+        itensCount.set(nomeNormalizado, (itensCount.get(nomeNormalizado) || 0) + quantidade);
+        
+        // Calcula receita (se tiver preço individual, usa ele, senão divide o valor do pedido)
+        const precoItem = Number(item.preco) || valorMedioPorItem;
+        itensReceita.set(nomeNormalizado, (itensReceita.get(nomeNormalizado) || 0) + (precoItem * quantidade));
+      });
+    });
+    
+    // Converte para array e ordena por quantidade
+    return Array.from(itensCount.entries())
+      .map(([nome, quantidade]) => ({
+        nome,
+        quantidade,
+        receita: itensReceita.get(nome) || 0
+      }))
+      .sort((a, b) => b.quantidade - a.quantidade);
+  }
+
+  function renderItens(rows) {
+    const limite = Number(q('#limiteItens').value) || 10;
+    const itensData = processItens(rows).slice(0, limite);
+    
+    // Renderiza tabela
+    const tbody = q('#tbodyItens');
+    tbody.innerHTML = '';
+    itensData.forEach((item, index) => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${index + 1}</td>
+        <td style="max-width:150px;overflow:hidden;text-overflow:ellipsis">${item.nome}</td>
+        <td>${item.quantidade}</td>
+        <td>${currency(item.receita)}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+    
+    // Renderiza gráfico
+    if (itensData.length > 0) {
+      Plotly.newPlot('chart-itens', [{
+        x: itensData.map(item => item.quantidade),
+        y: itensData.map(item => item.nome.length > 25 ? item.nome.substring(0, 25) + '...' : item.nome),
+        type: 'bar',
+        orientation: 'h',
+        marker: { color: '#1E88E5' }
+      }], {
+        margin: { t: 20, l: 120, r: 20, b: 40 },
+        xaxis: { title: 'Quantidade Vendida' },
+        paper_bgcolor: '#fff',
+        plot_bgcolor: '#fff'
+      }, { displayModeBar: false });
+    }
+    
+    // Configura download CSV
+    q('#downloadItens').onclick = () => {
+      const headers = ['posicao', 'item', 'quantidade', 'receita'];
+      const lines = [headers.join(',')];
+      itensData.forEach((item, index) => {
+        const row = [
+          index + 1,
+          `"${item.nome.replaceAll('"', '""')}"`,
+          item.quantidade,
+          item.receita.toFixed(2)
+        ].join(',');
+        lines.push(row);
+      });
+      const blob = new Blob([lines.join('\n')], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'itens_mais_pedidos.csv';
+      a.click();
+      URL.revokeObjectURL(url);
+    };
+  }
+
+  function update(){
+    const rows = applyFilters();
+    renderKPIs(rows); renderCharts(rows); renderTable(rows); renderItens(rows);
+    q('#download').onclick = ()=> downloadCSV(rows);
+  }
+
+  // Pedidos de Hoje (listagem)
+  function renderHoje(rows){
+    const list = q('#listHoje'); list.innerHTML='';
+    const term = (q('#search').value||'').toLowerCase();
+    rows
+      .filter(r=> !term || (String(r.nome_cliente||'').toLowerCase().includes(term) || String(r.bairro||'').toLowerCase().includes(term)))
+      .sort((a,b)=> new Date(a.data_hora_pedido) - new Date(b.data_hora_pedido))
+      .forEach(r=>{
+        const wrap = document.createElement('div'); wrap.className='row';
+        const dt = new Date(r.data_hora_pedido).toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' });
+        wrap.innerHTML = `<div>${dt}</div><div>${r.nome_cliente||''}</div><div>${r.bairro||''}</div><div>${r.forma_pagamento||''}</div><div>${r.status||''}</div><div>${currency(r.valor_total||0)}`;
+        list.appendChild(wrap);
+      });
+    q('#countHoje').textContent = rows.length + ' pedidos';
+  }
+  async function refreshHoje(){
+    const start = todayStr() + "T00:00:00";
+    const end = todayStr() + "T23:59:59";
+    const { data, error } = await supabase.from(SOURCE)
+      .select('*')
+      .gte('data_hora_pedido', start)
+      .lte('data_hora_pedido', end)
+      .order('data_hora_pedido', { ascending: true });
+    if(error) { console.error(error); return; }
+    const normalized = (data||[]).map(normalize);
+    renderHoje(normalized);
+  }
+  q('#refreshHoje').addEventListener('click', refreshHoje);
+  q('#search').addEventListener('input', refreshHoje);
+
+  // Load & auto-refresh
+  async function fetchAll(){
+    let from=0, size=1000, out=[], done=false;
+    while(!done){
+      const { data, error, count } = await supabase.from(SOURCE).select('*', { count:'exact' }).range(from, from+size-1);
+      if(error) throw error;
+      out = out.concat(data||[]); from += size; if(!data.length || from >= (count||Infinity)) done = true;
+    }
+    return out;
+  }
+  async function init(){
+    try{
+      q('#status').textContent = 'Carregando…';
+      const raw = await fetchAll();
+      DATA = raw.map(normalize);
+      q('#status').textContent = `Conectado • ${DATA.length} pedidos`;
+      hydrateFilters(); update(); refreshHoje();
+      if (window.timerHoje) clearInterval(window.timerHoje);
+      window.timerHoje = setInterval(refreshHoje, 20000); // 20s
+    }catch(e){
+      q('#status').textContent = 'Erro de leitura';
+      alert('Erro Supabase: '+(e.message||e));
+    }
+  }
+  init();
+</script>
+</body>
+</html>
