@@ -1217,7 +1217,7 @@
   function checkAuth() {
     const user = localStorage.getItem('karaiba_user');
     if (!user) {
-      window.location.href = 'login.html';
+      window.location.href = '/login.html';
       return false;
     }
     
@@ -1230,14 +1230,14 @@
       
       if (hoursDiff > 24) {
         localStorage.removeItem('karaiba_user');
-        window.location.href = 'login.html';
+        window.location.href = '/login.html';
         return false;
       }
       
       return userData;
     } catch (error) {
       localStorage.removeItem('karaiba_user');
-      window.location.href = 'login.html';
+      window.location.href = '/login.html';
       return false;
     }
   }
