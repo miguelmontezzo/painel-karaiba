@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
   <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
   <title>Painel Gerencial - Karaíba</title>
   <link rel="icon" type="image/x-icon" href="/favicon.ico">
   <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
@@ -13,33 +13,412 @@
       --red:#C62828; --red-700:#B71C1C; --green:#2E7D32; --blue:#1E88E5;
       --bg:#f6f7fb; --card:#ffffff; --text:#0f172a; --muted:#667085; --border:#e6e8ef;
     }
-    *{box-sizing:border-box} html,body{height:100%} body{margin:0;background:var(--bg);font-family:Inter,system-ui,sans-serif;color:var(--text)}
-    .container{max-width:1200px;margin:0 auto;padding:20px}
-    .bar{background:var(--red);color:#fff;border-radius:0 0 10px 10px;padding:10px 14px;display:flex;align-items:center;gap:12px}
-    .logo{width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,#ff8a80, #ff5252);background-image:url('https://i.ibb.co/Q37KgBh3/Ativo-1-2x.png');background-size:contain;background-repeat:no-repeat;background-position:center;}
-    .pill{padding:6px 10px;border-radius:999px;background:#fff;border:1px solid var(--border);color:var(--muted)}
-    .tabs{display:flex;gap:8px;margin:12px 0}
-    .tab{border:1px solid var(--border);background:#fff;border-radius:10px;padding:8px 12px;cursor:pointer;font-weight:600;color:var(--muted)}
-    .tab.active{background:#fff3f3;border-color:#ffd6d6;color:var(--red-700)}
-    .card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px;box-shadow:0 2px 8px rgba(16,24,40,.05)}
-    .filters.card{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
-    .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:12px 0}
-    .kpi h3{margin:0 0 6px;color:var(--muted);font-size:12px} .kpi .val{font-weight:800;font-size:24px}
-    .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-    .th{background:#f3f4f6}
-    table{width:100%;border-collapse:collapse;font-size:12px} th,td{padding:10px;border-bottom:1px solid var(--border)} th{text-align:left;color:var(--muted)}
-    .btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--border);background:#fff;border-radius:10px;padding:8px 12px;cursor:pointer}
-    .row{display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr 1fr;gap:8px;align-items:center}
-    .row > div{padding:8px 10px;border-bottom:1px solid var(--border);background:#fff;border-radius:10px}
-    .row.header > div{font-weight:700;background:#f3f4f6}
-    @media(max-width:950px){.filters.card{grid-template-columns:1fr 1fr} .kpis{grid-template-columns:1fr 1fr} .grid{grid-template-columns:1fr} .row{grid-template-columns:1fr 1fr 1fr} }
+    
+    /* RESET E BASE - MOBILE FIRST */
+    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+    html,body{height:100%;margin:0;padding:0}
+    body{background:var(--bg);font-family:Inter,system-ui,sans-serif;color:var(--text);font-size:14px;line-height:1.4}
+    
+    /* CONTAINER RESPONSIVO */
+    .container{
+      width:100%;
+      max-width:1200px;
+      margin:0 auto;
+      padding:12px;
+    }
+    
+    /* BARRA SUPERIOR */
+    .bar{
+      background:var(--red);
+      color:#fff;
+      padding:12px 16px;
+      display:flex;
+      align-items:center;
+      gap:12px;
+      position:sticky;
+      top:0;
+      z-index:100;
+      box-shadow:0 2px 8px rgba(0,0,0,0.1);
+    }
+    .logo{
+      width:36px;
+      height:36px;
+      border-radius:8px;
+      background:linear-gradient(135deg,#ff8a80, #ff5252);
+      background-image:url('https://i.ibb.co/Q37KgBh3/Ativo-1-2x.png');
+      background-size:contain;
+      background-repeat:no-repeat;
+      background-position:center;
+      flex-shrink:0;
+    }
+    .bar-text{flex:1;min-width:0}
+    .bar-text strong{display:block;font-size:16px;margin-bottom:2px}
+    .bar-text div{font-size:12px;opacity:0.9}
+    
+    /* PILL STATUS */
+    .pill{
+      padding:6px 12px;
+      border-radius:999px;
+      background:rgba(255,255,255,0.2);
+      color:#fff;
+      font-size:12px;
+      font-weight:600;
+      white-space:nowrap;
+    }
+    
+    /* TABS MOBILE */
+    .tabs{
+      display:flex;
+      gap:6px;
+      margin:16px 0 12px;
+      overflow-x:auto;
+      -webkit-overflow-scrolling:touch;
+      padding-bottom:4px;
+    }
+    .tab{
+      border:1px solid var(--border);
+      background:#fff;
+      border-radius:8px;
+      padding:10px 16px;
+      cursor:pointer;
+      font-weight:600;
+      color:var(--muted);
+      white-space:nowrap;
+      font-size:14px;
+      transition:all 0.2s ease;
+    }
+    .tab.active{
+      background:#fff3f3;
+      border-color:#ffd6d6;
+      color:var(--red-700);
+    }
+    
+    /* CARDS */
+    .card{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:12px;
+      padding:16px;
+      margin-bottom:16px;
+      box-shadow:0 2px 8px rgba(16,24,40,.05);
+    }
+    
+    /* FILTROS - MOBILE FIRST */
+    .filters.card{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:12px;
+    }
+    .filters.card label{
+      display:block;
+      font-weight:600;
+      color:var(--text);
+      margin-bottom:6px;
+      font-size:13px;
+    }
+    .filters.card input,
+    .filters.card select{
+      width:100%;
+      padding:12px;
+      border:1px solid var(--border);
+      border-radius:8px;
+      font-size:14px;
+      background:#fff;
+    }
+    
+    /* KPIs - MOBILE */
+    .kpis{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+      margin:16px 0;
+    }
+    .kpi h3{
+      margin:0 0 8px;
+      color:var(--muted);
+      font-size:12px;
+      font-weight:600;
+      text-transform:uppercase;
+      letter-spacing:0.5px;
+    }
+    .kpi .val{
+      font-weight:800;
+      font-size:20px;
+      color:var(--text);
+    }
+    
+    /* GRID LAYOUTS */
+    .grid{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:16px;
+    }
+    
+    /* TABELAS MOBILE */
+    .table-container{
+      overflow-x:auto;
+      -webkit-overflow-scrolling:touch;
+      margin:-16px;
+      padding:16px;
+    }
+    table{
+      width:100%;
+      border-collapse:collapse;
+      font-size:12px;
+      min-width:600px;
+    }
+    th,td{
+      padding:12px 8px;
+      border-bottom:1px solid var(--border);
+      text-align:left;
+    }
+    th{
+      background:#f8f9fa;
+      color:var(--muted);
+      font-weight:600;
+      position:sticky;
+      top:0;
+      z-index:1;
+    }
+    
+    /* BOTÕES */
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      border:1px solid var(--border);
+      background:#fff;
+      border-radius:8px;
+      padding:10px 16px;
+      cursor:pointer;
+      font-size:14px;
+      font-weight:600;
+      transition:all 0.2s ease;
+      white-space:nowrap;
+    }
+    .btn:hover{
+      background:#f8f9fa;
+    }
+    
+    /* CARDS DE PEDIDOS */
+    .pedidos-grid{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:16px;
+      margin-top:16px;
+    }
+    
+    .pedido-card{
+      background:#fff;
+      border:1px solid var(--border);
+      border-radius:16px;
+      padding:20px;
+      box-shadow:0 2px 8px rgba(16,24,40,.06);
+      transition:all 0.3s ease;
+      position:relative;
+    }
+    
+    .pedido-card:hover{
+      box-shadow:0 8px 24px rgba(16,24,40,.12);
+      border-color:#ddd;
+      transform:translateY(-2px);
+    }
+    
+    .pedido-header{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      margin-bottom:16px;
+    }
+    
+    .pedido-time{
+      background:#f0f9ff;
+      color:#0369a1;
+      font-weight:700;
+      font-family:monospace;
+      font-size:14px;
+      padding:6px 12px;
+      border-radius:8px;
+      letter-spacing:0.5px;
+    }
+    
+    .pedido-value{
+      background:#f0fdf4;
+      color:#166534;
+      font-weight:800;
+      font-size:18px;
+      padding:8px 16px;
+      border-radius:12px;
+      border:2px solid #bbf7d0;
+    }
+    
+    .pedido-cliente{
+      font-size:16px;
+      font-weight:700;
+      color:var(--text);
+      margin-bottom:4px;
+    }
+    
+    .pedido-info{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+      margin-bottom:16px;
+    }
+    
+    .info-item{
+      display:flex;
+      flex-direction:column;
+      gap:4px;
+    }
+    
+    .info-label{
+      font-size:11px;
+      font-weight:600;
+      color:var(--muted);
+      text-transform:uppercase;
+      letter-spacing:0.5px;
+    }
+    
+    .info-value{
+      font-size:14px;
+      color:var(--text);
+      font-weight:500;
+    }
+    
+    .pedido-status{
+      position:absolute;
+      top:16px;
+      right:16px;
+      padding:6px 12px;
+      border-radius:20px;
+      font-size:12px;
+      font-weight:600;
+      color:#fff;
+      text-transform:uppercase;
+      letter-spacing:0.3px;
+    }
+    
+    .status-entregue{background:#2E7D32}
+    .status-pendente{background:#FF9800}
+    .status-preparando{background:#1E88E5}
+    .status-cancelado{background:#C62828}
+    
+    /* HEADER DOS PEDIDOS */
+    .pedidos-header{
+      display:none;
+      grid-template-columns:80px 1fr 120px 100px 80px 120px;
+      gap:16px;
+      padding:12px 20px;
+      background:#f8f9fa;
+      border-radius:12px;
+      margin-bottom:8px;
+      font-size:11px;
+      font-weight:700;
+      color:var(--muted);
+      text-transform:uppercase;
+      letter-spacing:0.5px;
+    }
+    
+    /* SEÇÃO HEADER */
+    .section-header{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:16px;
+      flex-wrap:wrap;
+      gap:12px;
+    }
+    .section-header strong{
+      font-size:16px;
+      color:var(--text);
+    }
+    .section-controls{
+      display:flex;
+      gap:8px;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+    
+    /* SEARCH INPUT */
+    .search-container{
+      display:flex;
+      gap:8px;
+      align-items:center;
+      flex-wrap:wrap;
+      margin-bottom:12px;
+    }
+    #search{
+      flex:1;
+      min-width:200px;
+      padding:10px 12px;
+      border:1px solid var(--border);
+      border-radius:8px;
+      font-size:14px;
+    }
+    
+    /* BREAKPOINTS TABLET */
+    @media(min-width:640px){
+      .container{padding:20px}
+      .filters.card{grid-template-columns:1fr 1fr}
+      .kpis{grid-template-columns:repeat(4,1fr)}
+      .pedidos-grid{grid-template-columns:1fr 1fr}
+      .logo{width:40px;height:40px}
+      .kpi .val{font-size:24px}
+    }
+    
+    /* BREAKPOINTS TABLET LARGE */
+    @media(min-width:768px){
+      .grid{grid-template-columns:1fr 1fr}
+      .filters.card{grid-template-columns:repeat(3,1fr)}
+      table{min-width:auto}
+      .table-container{margin:0;padding:0}
+    }
+    
+    /* BREAKPOINTS DESKTOP */
+    @media(min-width:950px){
+      .filters.card{grid-template-columns:repeat(5,1fr)}
+      .pedidos-grid{grid-template-columns:repeat(3,1fr)}
+    }
+    
+    /* BREAKPOINTS LARGE DESKTOP */
+    @media(min-width:1200px){
+      .pedidos-grid{grid-template-columns:repeat(4,1fr)}
+    }
+    
+    /* HIDDEN/SHOW UTILITIES */
+    .mobile-only{display:block}
+    .desktop-only{display:none}
+    
+    @media(min-width:768px){
+      .mobile-only{display:none}
+      .desktop-only{display:block}
+    }
+    
+    /* CHART CONTAINERS */
+    .chart-container{
+      height:300px;
+      width:100%;
+    }
+    
+    @media(min-width:640px){
+      .chart-container{height:320px}
+    }
+    
+    /* ACCESSIBILITY */
+    @media(prefers-reduced-motion:reduce){
+      *{transition:none!important}
+    }
   </style>
 </head>
 <body>
   <div class="bar">
     <div class="logo"></div>
-    <div><strong>Painel de Pedidos • Karaíba</strong><div style="font-size:12px;opacity:.9">Visão clara para o delivery</div></div>
-    <div style="margin-left:auto" id="status" class="pill">Conectando…</div>
+    <div class="bar-text">
+      <strong>Painel de Pedidos • Karaíba</strong>
+      <div>Visão clara para o delivery</div>
+    </div>
+    <div id="status" class="pill">Conectando…</div>
   </div>
 
   <div class="container">
@@ -66,31 +445,31 @@
       </section>
 
       <section class="grid">
-        <div class="card"><div id="chart-pedidos" style="height:320px"></div></div>
-        <div class="card"><div id="chart-fat" style="height:320px"></div></div>
-        <div class="card"><div id="chart-bairros" style="height:320px"></div></div>
-        <div class="card"><div id="chart-pagamento" style="height:320px"></div></div>
+        <div class="card"><div id="chart-pedidos" class="chart-container"></div></div>
+        <div class="card"><div id="chart-fat" class="chart-container"></div></div>
+        <div class="card"><div id="chart-bairros" class="chart-container"></div></div>
+        <div class="card"><div id="chart-pagamento" class="chart-container"></div></div>
       </section>
 
       <!-- SEÇÃO ITENS MAIS PEDIDOS -->
-      <section class="card" style="margin-top:12px">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <section class="card">
+        <div class="section-header">
           <strong>Pratos Mais Pedidos (Cardápio)</strong>
-          <div style="display:flex;gap:8px;align-items:center">
-            <select id="limiteItens" style="padding:6px 10px;border:1px solid var(--border);border-radius:8px;font-size:12px">
+          <div class="section-controls">
+            <select id="limiteItens" class="btn" style="border:1px solid var(--border);background:#fff;padding:8px 12px">
               <option value="10" selected>Top 10</option>
               <option value="15">Top 15</option>
               <option value="20">Top 20</option>
             </select>
-            <button id="downloadItens" class="btn" style="font-size:12px;padding:6px 10px">Baixar CSV</button>
+            <button id="downloadItens" class="btn">Baixar CSV</button>
           </div>
         </div>
         
         <div class="grid">
-          <div><div id="chart-itens" style="height:350px"></div></div>
-          <div style="overflow:auto;max-height:350px">
-            <table style="font-size:11px">
-              <thead class="th"><tr>
+          <div><div id="chart-itens" class="chart-container" style="height:350px"></div></div>
+          <div class="table-container" style="max-height:350px">
+            <table>
+              <thead><tr>
                 <th>#</th><th>Item</th><th>Qtd</th><th>Receita</th>
               </tr></thead>
               <tbody id="tbodyItens"></tbody>
@@ -99,14 +478,14 @@
         </div>
       </section>
 
-      <section class="card" style="margin-top:12px">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <section class="card">
+        <div class="section-header">
           <strong>Pedidos (amostra filtrada)</strong>
           <button id="download" class="btn">Baixar CSV</button>
         </div>
-        <div style="overflow:auto;max-height:360px">
+        <div class="table-container" style="max-height:360px">
           <table>
-            <thead class="th"><tr>
+            <thead><tr>
               <th>Data</th><th>Cliente</th><th>Bairro</th><th>Pagamento</th><th>Status</th><th>Total (R$)</th>
             </tr></thead>
             <tbody id="tbody"></tbody>
@@ -117,22 +496,31 @@
 
     <!-- PEDIDOS DE HOJE -->
     <section id="hoje" class="tabpane" style="display:none">
-      <section class="card" style="margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
-        <strong style="font-size:16px">Pedidos de Hoje</strong>
-        <div style="display:flex;gap:8px;align-items:center">
-          <input id="search" placeholder="Buscar cliente/bairro..." style="padding:10px;border:1px solid var(--border);border-radius:10px"/>
-          <span id="countHoje" class="pill">0 pedidos</span>
-          <button id="refreshHoje" class="btn">Atualizar</button>
-        </div>
-      </section>
-
       <section class="card">
-        <div class="row header">
-          <div>Hora</div><div>Cliente</div><div>Bairro</div><div>Pagamento</div><div>Status</div><div>Total</div>
+        <div class="section-header">
+          <strong>Pedidos de Hoje</strong>
+          <div class="section-controls">
+            <span id="countHoje" class="pill" style="background:var(--green);color:#fff">0 pedidos</span>
+          <button id="refreshHoje" class="btn">Atualizar</button>
+          </div>
         </div>
-        <div id="listHoje"></div>
+        
+        <div class="search-container">
+          <input id="search" placeholder="Buscar cliente/bairro..."/>
+        </div>
+        
+        <div class="pedidos-grid" id="listHoje"></div>
+        
+        <div id="emptyStateHoje" style="display:none;text-align:center;padding:60px 20px;color:var(--muted)">
+          <div style="font-size:64px;margin-bottom:20px">📋</div>
+          <div style="font-size:18px;margin-bottom:8px;font-weight:600">Nenhum pedido hoje</div>
+          <div style="font-size:14px">Os pedidos aparecerão aqui quando chegarem</div>
+        </div>
+
+        <div style="color:var(--muted);font-size:12px;margin-top:12px;text-align:center">
+          Atualiza automaticamente a cada 20s
+        </div>
       </section>
-      <div style="color:var(--muted);font-size:12px;margin-top:6px">Atualiza automaticamente a cada 20s</div>
     </section>
 
 
@@ -203,14 +591,87 @@
     q('#kpi-cartao').textContent = (cartao*100).toFixed(1)+'%';
   }
   function renderCharts(rows){
+    const isMobile = window.innerWidth < 640;
+    const isTablet = window.innerWidth < 768;
+    
+    // Configurações responsivas para gráficos
+    const mobileConfig = {
+      displayModeBar: false,
+      responsive: true,
+      modeBarButtonsToRemove: ['pan2d', 'lasso2d', 'select2d']
+    };
+    
+    const mobileLayout = {
+      margin: { t: 20, l: 30, r: 20, b: 40 },
+      paper_bgcolor: '#fff',
+      plot_bgcolor: '#fff',
+      font: { size: isMobile ? 10 : 12 }
+    };
+    
+    // Gráfico de pedidos por dia
     const byDay = groupBy(rows, r=> String(r.data_hora_pedido).slice(0,10), _=>1, 'count');
-    Plotly.newPlot('chart-pedidos',[{x:byDay.map(d=>d.key), y:byDay.map(d=>d.value), type:'bar'}],{margin:{t:10,l:40,r:10,b:40}, xaxis:{tickangle:-30}, paper_bgcolor:'#fff', plot_bgcolor:'#fff'},{displayModeBar:false});
+    Plotly.newPlot('chart-pedidos', [{
+      x: byDay.map(d => d.key),
+      y: byDay.map(d => d.value),
+      type: 'bar',
+      marker: { color: '#1E88E5' }
+    }], {
+      ...mobileLayout,
+      title: isMobile ? '' : 'Pedidos por Dia',
+      xaxis: { tickangle: isMobile ? -45 : -30, tickfont: { size: isMobile ? 9 : 11 } }
+    }, mobileConfig);
+    
+    // Gráfico de faturamento
     const byDayFat = groupBy(rows, r=> String(r.data_hora_pedido).slice(0,10), r=> Number(r.valor_total)||0, 'sum');
-    Plotly.newPlot('chart-fat',[{x:byDayFat.map(d=>d.key), y:byDayFat.map(d=>d.value), type:'scatter', mode:'lines+markers'}],{margin:{t:10,l:40,r:10,b:40}, xaxis:{tickangle:-30}, paper_bgcolor:'#fff', plot_bgcolor:'#fff'},{displayModeBar:false});
-    const bairros = groupBy(rows, r=> (r.bairro||'—'), _=>1, 'count').sort((a,b)=> b.value-a.value).slice(0,8);
-    Plotly.newPlot('chart-bairros',[{x:bairros.map(d=>d.key), y:bairros.map(d=>d.value), type:'bar'}],{margin:{t:10,l:40,r:10,b:80}, xaxis:{tickangle:-25}, paper_bgcolor:'#fff', plot_bgcolor:'#fff'},{displayModeBar:false});
+    Plotly.newPlot('chart-fat', [{
+      x: byDayFat.map(d => d.key),
+      y: byDayFat.map(d => d.value),
+      type: 'scatter',
+      mode: 'lines+markers',
+      line: { color: '#2E7D32' },
+      marker: { color: '#2E7D32' }
+    }], {
+      ...mobileLayout,
+      title: isMobile ? '' : 'Faturamento por Dia',
+      xaxis: { tickangle: isMobile ? -45 : -30, tickfont: { size: isMobile ? 9 : 11 } }
+    }, mobileConfig);
+    
+    // Gráfico de bairros
+    const bairros = groupBy(rows, r=> (r.bairro||'—'), _=>1, 'count')
+      .sort((a,b)=> b.value-a.value)
+      .slice(0, isMobile ? 5 : 8);
+    Plotly.newPlot('chart-bairros', [{
+      x: bairros.map(d => d.key),
+      y: bairros.map(d => d.value),
+      type: 'bar',
+      marker: { color: '#C62828' }
+    }], {
+      ...mobileLayout,
+      title: isMobile ? '' : 'Pedidos por Bairro',
+      margin: { t: 20, l: 30, r: 20, b: isMobile ? 60 : 80 },
+      xaxis: { 
+        tickangle: isMobile ? -45 : -25, 
+        tickfont: { size: isMobile ? 8 : 10 }
+      }
+    }, mobileConfig);
+    
+    // Gráfico de pagamento
     const pay = groupBy(rows, r=> (r.forma_pagamento||'—'), _=>1, 'count');
-    Plotly.newPlot('chart-pagamento',[{labels:pay.map(d=>d.key), values:pay.map(d=>d.value), type:'pie', hole:0.55}],{margin:{t:10,l:10,r:10,b:10}, paper_bgcolor:'#fff', plot_bgcolor:'#fff', legend:{orientation:'h'}},{displayModeBar:false});
+    Plotly.newPlot('chart-pagamento', [{
+      labels: pay.map(d => d.key),
+      values: pay.map(d => d.value),
+      type: 'pie',
+      hole: 0.4,
+      textfont: { size: isMobile ? 10 : 12 }
+    }], {
+      ...mobileLayout,
+      title: isMobile ? '' : 'Formas de Pagamento',
+      legend: { 
+        orientation: 'h',
+        y: isMobile ? -0.2 : -0.1,
+        font: { size: isMobile ? 9 : 11 }
+      }
+    }, mobileConfig);
   }
   function renderTable(rows){
     const tb = q('#tbody'); tb.innerHTML='';
@@ -443,20 +904,73 @@
     q('#download').onclick = ()=> downloadCSV(rows);
   }
 
-  // Pedidos de Hoje (listagem)
+    // Pedidos de Hoje (listagem em cards)
   function renderHoje(rows){
-    const list = q('#listHoje'); list.innerHTML='';
+    const list = q('#listHoje'); 
+    list.innerHTML = '';
     const term = (q('#search').value||'').toLowerCase();
-    rows
+    
+    const filteredRows = rows
       .filter(r=> !term || (String(r.nome_cliente||'').toLowerCase().includes(term) || String(r.bairro||'').toLowerCase().includes(term)))
-      .sort((a,b)=> new Date(a.data_hora_pedido) - new Date(b.data_hora_pedido))
-      .forEach(r=>{
-        const wrap = document.createElement('div'); wrap.className='row';
+      .sort((a,b)=> new Date(b.data_hora_pedido) - new Date(a.data_hora_pedido)); // Mais recentes primeiro
+    
+    // Mostra estado vazio se não há pedidos
+    const emptyState = q('#emptyStateHoje');
+    if (filteredRows.length === 0) {
+      emptyState.style.display = 'block';
+      list.style.display = 'none';
+    } else {
+      emptyState.style.display = 'none';
+      list.style.display = 'grid';
+      
+      filteredRows.forEach(r => {
+        const card = document.createElement('div');
+        card.className = 'pedido-card';
+        
         const dt = new Date(r.data_hora_pedido).toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' });
-        wrap.innerHTML = `<div>${dt}</div><div>${r.nome_cliente||''}</div><div>${r.bairro||''}</div><div>${r.forma_pagamento||''}</div><div>${r.status||''}</div><div>${currency(r.valor_total||0)}`;
-        list.appendChild(wrap);
+        const status = r.status || 'Pendente';
+        const statusClass = `status-${status.toLowerCase().replace(' ', '-').replace('ã', 'a')}`;
+        
+        card.innerHTML = `
+          <div class="pedido-status ${statusClass}">${status}</div>
+          
+          <div class="pedido-header">
+            <div class="pedido-time">${dt}</div>
+            <div class="pedido-value">${currency(r.valor_total||0)}</div>
+          </div>
+          
+          <div class="pedido-cliente">
+            ${r.nome_cliente || 'Cliente não informado'}
+          </div>
+          
+          <div class="pedido-info">
+            <div class="info-item">
+              <div class="info-label">Bairro</div>
+              <div class="info-value">${r.bairro || 'Não informado'}</div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">Pagamento</div>
+              <div class="info-value">${r.forma_pagamento || 'Não informado'}</div>
+            </div>
+          </div>
+        `;
+        
+        list.appendChild(card);
       });
-    q('#countHoje').textContent = rows.length + ' pedidos';
+    }
+    
+    q('#countHoje').textContent = filteredRows.length + ' pedidos';
+  }
+  
+  // Função auxiliar para cores de status
+  function getStatusColor(status) {
+    const colors = {
+      'Entregue': '#2E7D32',
+      'Pendente': '#FF9800', 
+      'Preparando': '#1E88E5',
+      'Cancelado': '#C62828'
+    };
+    return colors[status] || '#667085';
   }
   async function refreshHoje(){
     const start = todayStr() + "T00:00:00";
@@ -483,6 +997,20 @@
     }
     return out;
   }
+  // Event listener para redimensionamento (responsividade)
+  let resizeTimeout;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(() => {
+      if (DATA.length > 0) {
+        const rows = applyFilters();
+        renderCharts(rows);
+        renderItens(rows);
+        // Não precisa re-renderizar pedidos de hoje no resize pois são cards responsivos
+      }
+    }, 300);
+  });
+
   async function init(){
     try{
       q('#status').textContent = 'Carregando…';
