@@ -41,6 +41,41 @@
       box-shadow:0 2px 8px rgba(0,0,0,0.1);
       min-height:80px;
     }
+    
+    /* AÇÕES DA BARRA */
+    .bar-actions{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      margin-left:auto;
+    }
+    
+    /* BOTÃO DE LOGOUT */
+    .logout-btn{
+      background:rgba(255,255,255,0.1);
+      border:1px solid rgba(255,255,255,0.3);
+      color:#fff;
+      padding:8px 12px;
+      border-radius:8px;
+      font-size:14px;
+      font-weight:600;
+      cursor:pointer;
+      transition:all 0.2s ease;
+      display:flex;
+      align-items:center;
+      gap:6px;
+      backdrop-filter:blur(10px);
+    }
+    
+    .logout-btn:hover{
+      background:rgba(255,255,255,0.2);
+      border-color:rgba(255,255,255,0.4);
+      transform:translateY(-1px);
+    }
+    
+    .logout-btn:active{
+      transform:translateY(0);
+    }
     .logo{
       width:40px;
       height:40px;
@@ -587,6 +622,11 @@
       .bar-text strong{font-size:16px}
       .bar-text div{font-size:12px}
       .pill{padding:6px 10px;font-size:12px}
+      .logout-btn{
+        padding:6px 8px;
+        font-size:12px;
+      }
+      .logout-text{display:none} /* Esconder texto no mobile pequeno */
       .section-header{margin-bottom:16px}
       .section-header strong{font-size:15px}
       .btn{
@@ -870,6 +910,136 @@
       .filters.card input,
       .filters.card select{border-width:3px}
     }
+    
+    /* MODAL STYLES */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+      animation: fadeIn 0.2s ease-out;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    @keyframes slideIn {
+      from { 
+        opacity: 0;
+        transform: scale(0.9) translateY(-20px);
+      }
+      to { 
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+    
+    .modal-content {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      max-width: 400px;
+      width: 90%;
+      animation: slideIn 0.3s ease-out;
+      overflow: hidden;
+    }
+    
+    .modal-header {
+      padding: 24px 24px 0;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    
+    .modal-header h3 {
+      margin: 0 0 16px 0;
+      font-size: 20px;
+      font-weight: 700;
+      color: #1e293b;
+    }
+    
+    .modal-body {
+      padding: 20px 24px;
+    }
+    
+    .modal-body p {
+      margin: 0;
+      font-size: 16px;
+      color: #64748b;
+      line-height: 1.5;
+    }
+    
+    .modal-footer {
+      padding: 0 24px 24px;
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+    }
+    
+    .btn-cancel,
+    .btn-confirm {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      min-width: 80px;
+    }
+    
+    .btn-cancel {
+      background: #f1f5f9;
+      color: #475569;
+      border: 1px solid #e2e8f0;
+    }
+    
+    .btn-cancel:hover {
+      background: #e2e8f0;
+      color: #334155;
+    }
+    
+    .btn-confirm {
+      background: #dc2626;
+      color: #fff;
+    }
+    
+    .btn-confirm:hover {
+      background: #b91c1c;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+    }
+    
+    /* RESPONSIVE MODAL */
+    @media(max-width: 480px) {
+      .modal-content {
+        margin: 20px;
+        width: calc(100% - 40px);
+      }
+      
+      .modal-header,
+      .modal-body,
+      .modal-footer {
+        padding-left: 20px;
+        padding-right: 20px;
+      }
+      
+      .modal-footer {
+        flex-direction: column;
+      }
+      
+      .btn-cancel,
+      .btn-confirm {
+        width: 100%;
+      }
+    }
   </style>
 </head>
 <body>
@@ -879,7 +1049,13 @@
       <strong>Painel de Pedidos • Karaíba</strong>
       <div>Visão clara para o delivery</div>
     </div>
-    <div id="status" class="pill">Conectando…</div>
+    <div class="bar-actions">
+      <div id="status" class="pill">Conectando…</div>
+      <button id="logoutBtn" class="logout-btn" title="Sair">
+        <span>👤</span>
+        <span class="logout-text">Sair</span>
+      </button>
+    </div>
   </div>
 
   <div class="container">
@@ -1016,10 +1192,68 @@
 
   </div>
 
+  <!-- Modal de Confirmação de Logout -->
+  <div id="logoutModal" class="modal-overlay" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Confirmar Saída</h3>
+      </div>
+      <div class="modal-body">
+        <p>Tem certeza que deseja sair do sistema?</p>
+      </div>
+      <div class="modal-footer">
+        <button id="cancelLogout" class="btn-cancel">Cancelar</button>
+        <button id="confirmLogout" class="btn-confirm">Sair</button>
+      </div>
+    </div>
+  </div>
+
 <script type="module">
   import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
   const supabase = createClient("https://dbepscombakzdvruuxav.supabase.co", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRiZXBzY29tYmFremR2cnV1eGF2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTEzODg5OTEsImV4cCI6MjA2Njk2NDk5MX0.vahd7AyhmuJ22EzpapV237jPQPh4UjL-gt6QMvVRozs", { db: { schema:'public' } });
   const SOURCE = "pedidos_karaiba";
+
+  // Verificação de autenticação
+  function checkAuth() {
+    const user = localStorage.getItem('karaiba_user');
+    if (!user) {
+      window.location.href = 'login.html';
+      return false;
+    }
+    
+    try {
+      const userData = JSON.parse(user);
+      // Verificar se o login não expirou (24 horas)
+      const loginTime = new Date(userData.loginTime);
+      const now = new Date();
+      const hoursDiff = (now - loginTime) / (1000 * 60 * 60);
+      
+      if (hoursDiff > 24) {
+        localStorage.removeItem('karaiba_user');
+        window.location.href = 'login.html';
+        return false;
+      }
+      
+      return userData;
+    } catch (error) {
+      localStorage.removeItem('karaiba_user');
+      window.location.href = 'login.html';
+      return false;
+    }
+  }
+  
+  // Verificar autenticação ao carregar a página
+  console.log('Verificando autenticação...');
+  const currentUser = checkAuth();
+  console.log('Resultado da autenticação:', currentUser);
+  if (!currentUser) {
+    console.log('Usuário não autenticado, redirecionando...');
+  } else {
+    console.log('Usuário autenticado, continuando...');
+    initApp();
+  }
+
+  function initApp() {
 
   // Helpers
   const q = (s)=>document.querySelector(s);
@@ -1476,12 +1710,19 @@
 
   // Load & auto-refresh
   async function fetchAll(){
+    console.log('fetchAll: Iniciando busca na tabela', SOURCE);
     let from=0, size=1000, out=[], done=false;
     while(!done){
+      console.log('fetchAll: Buscando registros', from, 'a', from+size-1);
       const { data, error, count } = await supabase.from(SOURCE).select('*', { count:'exact' }).range(from, from+size-1);
-      if(error) throw error;
+      console.log('fetchAll: Resultado da busca', { data: data?.length, error, count });
+      if(error) {
+        console.error('Erro no fetchAll:', error);
+        throw error;
+      }
       out = out.concat(data||[]); from += size; if(!data.length || from >= (count||Infinity)) done = true;
     }
+    console.log('fetchAll: Total de registros encontrados:', out.length);
     return out;
   }
   // Event listener para redimensionamento (responsividade)
@@ -1530,11 +1771,17 @@
   }
 
   async function init(){
+    console.log('Iniciando função init()...');
     try{
+      console.log('Definindo status como carregando...');
       q('#status').textContent = 'Carregando…';
+      console.log('Fazendo fetchAll()...');
       const raw = await fetchAll();
+      console.log('Dados recebidos:', raw?.length, 'registros');
       DATA = raw.map(normalize);
+      console.log('Dados normalizados:', DATA?.length, 'registros');
       q('#status').textContent = `Conectado • ${DATA.length} pedidos`;
+      console.log('Executando hydrateFilters, update e refreshHoje...');
       hydrateFilters(); update(); refreshHoje();
       
       // Configurar indicadores de scroll das tabelas
@@ -1543,11 +1790,69 @@
       if (window.timerHoje) clearInterval(window.timerHoje);
       window.timerHoje = setInterval(refreshHoje, 20000); // 20s
     }catch(e){
+      console.error('Erro na função init():', e);
       q('#status').textContent = 'Erro de leitura';
       alert('Erro Supabase: '+(e.message||e));
     }
   }
+
+  // Função de logout
+  function logout() {
+    showLogoutModal();
+  }
+  
+  // Mostrar modal de logout
+  function showLogoutModal() {
+    const modal = document.getElementById('logoutModal');
+    modal.style.display = 'flex';
+    
+    // Focus no botão cancelar para acessibilidade
+    setTimeout(() => {
+      document.getElementById('cancelLogout').focus();
+    }, 100);
+  }
+  
+  // Esconder modal de logout
+  function hideLogoutModal() {
+    const modal = document.getElementById('logoutModal');
+    modal.style.display = 'none';
+  }
+  
+  // Confirmar logout
+  function confirmLogout() {
+    localStorage.removeItem('karaiba_user');
+    window.location.href = 'login.html';
+  }
+
+  // Event listeners para logout
+  document.getElementById('logoutBtn').addEventListener('click', logout);
+  document.getElementById('cancelLogout').addEventListener('click', hideLogoutModal);
+  document.getElementById('confirmLogout').addEventListener('click', confirmLogout);
+  
+  // Fechar modal ao clicar fora dele
+  document.getElementById('logoutModal').addEventListener('click', (e) => {
+    if (e.target.id === 'logoutModal') {
+      hideLogoutModal();
+    }
+  });
+  
+  // Fechar modal com ESC
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      const modal = document.getElementById('logoutModal');
+      if (modal.style.display === 'flex') {
+        hideLogoutModal();
+      }
+    }
+  });
+
+  // Mostrar nome do usuário logado (opcional)
+  if (currentUser && currentUser.usuario) {
+    document.getElementById('logoutBtn').title = `Sair (${currentUser.usuario})`;
+  }
+
   init();
+  } // Fim da função initApp
 </script>
 </body>
 </html>
