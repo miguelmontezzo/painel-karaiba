@@ -40,6 +40,8 @@
       z-index:100;
       box-shadow:0 2px 8px rgba(0,0,0,0.1);
       min-height:80px;
+      flex-wrap:nowrap;
+      overflow:hidden;
     }
     
     /* AÇÕES DA BARRA */
@@ -91,6 +93,7 @@
       flex:1;
       min-width:0;
       margin-right:12px;
+      overflow:hidden;
     }
     .bar-text strong{
       display:block;
@@ -98,11 +101,17 @@
       font-weight:700;
       margin-bottom:4px;
       line-height:1.2;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
     }
     .bar-text div{
       font-size:13px;
       opacity:0.9;
       line-height:1.3;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
     }
     
     /* PILL STATUS */
@@ -614,17 +623,68 @@
       font-size:15px;
     }
     
+    /* BREAKPOINTS MOBILE EXTRA SMALL */
+    @media(max-width:320px){
+      .bar{
+        padding:10px;
+        gap:6px;
+        min-height:65px;
+      }
+      .logo{
+        width:28px;
+        height:28px;
+      }
+      .bar-text{
+        margin-right:6px;
+      }
+      .bar-text strong{
+        font-size:13px;
+        margin-bottom:1px;
+      }
+      .bar-text div{
+        font-size:10px;
+      }
+      .pill{
+        padding:3px 6px;
+        font-size:10px;
+      }
+      .logout-btn{
+        padding:5px 6px;
+        font-size:11px;
+      }
+    }
+    
     /* BREAKPOINTS MOBILE SMALL */
     @media(max-width:375px){
       .container{padding:12px} /* Padding menor em telas pequenas */
       .card{padding:16px; margin-bottom:16px} /* Cards mais compactos */
-      .bar{padding:12px}
-      .bar-text strong{font-size:16px}
-      .bar-text div{font-size:12px}
-      .pill{padding:6px 10px;font-size:12px}
+      .bar{
+        padding:12px;
+        gap:8px;
+        min-height:70px;
+      }
+      .logo{
+        width:32px;
+        height:32px;
+      }
+      .bar-text{
+        margin-right:8px;
+      }
+      .bar-text strong{
+        font-size:14px;
+        margin-bottom:2px;
+      }
+      .bar-text div{
+        font-size:11px;
+      }
+      .pill{
+        padding:4px 8px;
+        font-size:11px;
+      }
       .logout-btn{
         padding:6px 8px;
         font-size:12px;
+        min-width:auto;
       }
       .logout-text{display:none} /* Esconder texto no mobile pequeno */
       .section-header{margin-bottom:16px}
@@ -665,8 +725,16 @@
     @media(min-width:376px) and (max-width:639px){
       .container{padding:16px}
       .card{padding:20px; margin-bottom:20px}
-      .bar{padding:16px 20px}
-      .bar-text strong{font-size:18px}
+      .bar{
+        padding:14px 16px;
+        gap:10px;
+        min-height:75px;
+      }
+      .logo{
+        width:36px;
+        height:36px;
+      }
+      .bar-text strong{font-size:16px}
       .section-header{margin-bottom:18px}
       .btn{
         padding:10px 14px;
