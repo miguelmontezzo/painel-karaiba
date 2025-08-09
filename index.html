@@ -5,6 +5,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
   <title>Painel Gerencial - Karaíba</title>
   <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  
+  <!-- PWA Meta Tags -->
+  <meta name="theme-color" content="#4f46e5">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Karaíba">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="application-name" content="Karaíba">
+  
+  <!-- Manifest -->
+  <link rel="manifest" href="/manifest.json">
+  
+  <!-- Apple Touch Icons -->
+  <link rel="apple-touch-icon" href="/favicon.ico">
+  <link rel="apple-touch-icon" sizes="152x152" href="/favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="/favicon.ico">
+  <link rel="apple-touch-icon" sizes="167x167" href="/favicon.ico">
   <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
@@ -2350,6 +2367,92 @@
 
   init();
   } // Fim da função initApp
+
+  // Registrar Service Worker para PWA
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js')
+        .then(registration => {
+          console.log('Service Worker registrado com sucesso:', registration.scope);
+        })
+        .catch(error => {
+          console.log('Falha ao registrar Service Worker:', error);
+        });
+    });
+  }
+
+  // Detectar se pode ser instalado como PWA
+  let deferredPrompt;
+  window.addEventListener('beforeinstallprompt', (e) => {
+    console.log('PWA pode ser instalado');
+    e.preventDefault();
+    deferredPrompt = e;
+    
+    // Mostrar um botão para instalar ou banner
+    showInstallPromotion();
+  });
+
+  function showInstallPromotion() {
+    // Criar um pequeno banner de instalação
+    const installBanner = document.createElement('div');
+    installBanner.id = 'installBanner';
+    installBanner.style.cssText = `
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #4f46e5;
+      color: white;
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      z-index: 1000;
+      animation: slideIn 0.3s ease;
+      max-width: 250px;
+    `;
+    installBanner.innerHTML = '📱 Instalar App';
+    
+    installBanner.addEventListener('click', async () => {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        console.log('Resultado da instalação:', outcome);
+        deferredPrompt = null;
+        installBanner.remove();
+      }
+    });
+    
+    // Adicionar animação CSS
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes slideIn {
+        from { transform: translateX(100%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+      }
+    `;
+    document.head.appendChild(style);
+    
+    document.body.appendChild(installBanner);
+    
+    // Auto remover após 10 segundos
+    setTimeout(() => {
+      if (installBanner.parentNode) {
+        installBanner.style.animation = 'slideIn 0.3s ease reverse';
+        setTimeout(() => installBanner.remove(), 300);
+      }
+    }, 10000);
+  }
+
+  // Detectar quando o app foi instalado
+  window.addEventListener('appinstalled', (evt) => {
+    console.log('PWA foi instalado com sucesso');
+    // Remover banner se ainda estiver visível
+    const banner = document.getElementById('installBanner');
+    if (banner) banner.remove();
+  });
+
 </script>
 </body>
 </html>
