@@ -636,17 +636,18 @@
     }
     
     .pedido-status{
-      padding:6px 12px;
-      border-radius:12px;
-      font-size:11px;
+      padding:4px 8px;
+      border-radius:8px;
+      font-size:9px;
       font-weight:700;
       color:#fff;
       text-transform:uppercase;
-      letter-spacing:0.3px;
+      letter-spacing:0.2px;
       text-align:center;
-      min-width:80px;
-      box-shadow:0 2px 8px rgba(0,0,0,0.15);
+      min-width:60px;
+      box-shadow:0 1px 4px rgba(0,0,0,0.1);
       flex-shrink:0;
+      background:#FF9800; /* Cor padrão LARANJA para status não mapeados */
     }
     
     .pedido-tipo{
@@ -663,15 +664,35 @@
       min-width:60px;
     }
     
-    .status-entregue{background:#2E7D32}
-    .status-pendente{background:#FF9800}
-    .status-preparando{background:#1E88E5}
-    .status-cancelado{background:#C62828}
-    .status-confirmado{background:#4CAF50}
-    .status-em-preparo{background:#2196F3}
-    .status-pronto{background:#9C27B0}
-    .status-saiu-para-entrega{background:#FF5722}
-    .status-finalizado{background:#4CAF50}
+    /* Cores dos Status conforme solicitado */
+    /* 🟠 LARANJA - Pedidos Recebidos/Novos */
+    .status-pendente{background:#FF9800 !important}         
+    .status-recebido{background:#FF9800 !important}         
+    .status-novo{background:#FF9800 !important}             
+    .status-aguardando{background:#FF9800 !important}
+    .status-aceito{background:#FF9800 !important}
+    
+    /* 🟢 VERDE - Pedidos Confirmados */
+    .status-confirmado{background:#4CAF50 !important}       
+    .status-finalizado{background:#4CAF50 !important}       
+    .status-concluido{background:#4CAF50 !important}
+    
+    /* 🟢 VERDE ESCURO - Entregues */
+    .status-entregue{background:#2E7D32 !important}         
+    .status-entregado{background:#2E7D32 !important}
+    
+    /* 🔵 AZUL - Em Preparo/Entrega/Retirada */
+    .status-preparando{background:#1E88E5 !important}       
+    .status-em-preparo{background:#1E88E5 !important}       
+    .status-pronto{background:#1E88E5 !important}           
+    .status-saiu-para-entrega{background:#1E88E5 !important}  
+    .status-pronto-para-retirada{background:#1E88E5 !important}
+    .status-a-caminho{background:#1E88E5 !important}
+    .status-enviado{background:#1E88E5 !important}
+    
+    /* 🔴 VERMELHO - Cancelados */
+    .status-cancelado{background:#C62828 !important}        
+    .status-rejeitado{background:#C62828 !important}
     
     /* AÇÕES DOS PEDIDOS */
     .pedido-actions{
@@ -2086,7 +2107,18 @@
         const dt = new Date(r.data_hora_pedido).toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' });
         const status = r.status || 'Pendente';
         const tipoEntrega = r.tipo_entrega || r.entrega || 'Entrega';
-        const statusClass = `status-${status.toLowerCase().replace(' ', '-').replace('ã', 'a')}`;
+        
+        // Normalizar status para classe CSS
+        let statusNormalizado = status.toLowerCase()
+          .replace(/\s+/g, '-')  // espaços para hífens
+          .replace(/[ãáàâ]/g, 'a')  // acentos
+          .replace(/[éêè]/g, 'e')
+          .replace(/[íîì]/g, 'i')
+          .replace(/[óôòõ]/g, 'o')
+          .replace(/[úûù]/g, 'u')
+          .replace(/ç/g, 'c');
+          
+        const statusClass = `status-${statusNormalizado}`;
         
         // Determinar se é entrega ou retirada baseado em múltiplos campos
         let tipoDisplay = 'Entrega';
