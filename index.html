@@ -473,11 +473,17 @@
       transform:translateY(-2px);
     }
     
-    .pedido-header{
+    .card-top{
       display:flex;
       justify-content:space-between;
       align-items:flex-start;
-      margin-bottom:20px; /* Mais espaçamento após header */
+      margin-bottom:16px;
+    }
+    
+    .pedido-info-top{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
     }
     
     .pedido-time{
@@ -491,14 +497,26 @@
       letter-spacing:0.5px;
     }
     
+    .pedido-numero{
+      background:#f1f5f9;
+      color:#475569;
+      font-weight:600;
+      font-size:12px;
+      padding:4px 8px;
+      border-radius:6px;
+      letter-spacing:0.3px;
+    }
+    
     .pedido-value{
       background:#f0fdf4;
       color:#166534;
       font-weight:800;
-      font-size:18px;
-      padding:8px 16px;
+      font-size:20px;
+      padding:12px 20px;
       border-radius:12px;
       border:2px solid #bbf7d0;
+      text-align:center;
+      margin-bottom:16px;
     }
     
     .pedido-cliente{
@@ -536,22 +554,91 @@
     }
     
     .pedido-status{
-      position:absolute;
-      top:16px;
-      right:16px;
-      padding:6px 12px;
-      border-radius:20px;
-      font-size:12px;
+      padding:6px 10px;
+      border-radius:12px;
+      font-size:11px;
       font-weight:600;
       color:#fff;
       text-transform:uppercase;
       letter-spacing:0.3px;
+      text-align:center;
+      min-width:60px;
+      box-shadow:0 2px 8px rgba(0,0,0,0.15);
+      flex-shrink:0;
+    }
+    
+    .status-main{
+      font-size:11px;
+      font-weight:700;
+      margin-bottom:2px;
+    }
+    
+    .status-tipo{
+      font-size:9px;
+      font-weight:500;
+      opacity:0.9;
     }
     
     .status-entregue{background:#2E7D32}
     .status-pendente{background:#FF9800}
     .status-preparando{background:#1E88E5}
     .status-cancelado{background:#C62828}
+    .status-confirmado{background:#4CAF50}
+    .status-em-preparo{background:#2196F3}
+    .status-pronto{background:#9C27B0}
+    .status-saiu-para-entrega{background:#FF5722}
+    .status-finalizado{background:#4CAF50}
+    
+    /* AÇÕES DOS PEDIDOS */
+    .pedido-actions{
+      display:flex;
+      gap:8px;
+      margin-top:16px;
+      padding-top:16px;
+      border-top:1px solid var(--border);
+    }
+    
+    .btn-action{
+      flex:1;
+      padding:8px 12px;
+      border:1px solid;
+      border-radius:8px;
+      font-size:12px;
+      font-weight:600;
+      cursor:pointer;
+      transition:all 0.2s ease;
+      text-align:center;
+    }
+    
+    .btn-confirmar{
+      background:#f0fdf4;
+      color:#166534;
+      border-color:#bbf7d0;
+    }
+    
+    .btn-confirmar:hover:not(:disabled){
+      background:#dcfce7;
+      border-color:#86efac;
+      transform:translateY(-1px);
+    }
+    
+    .btn-entrega{
+      background:#eff6ff;
+      color:#1d4ed8;
+      border-color:#bfdbfe;
+    }
+    
+    .btn-entrega:hover:not(:disabled){
+      background:#dbeafe;
+      border-color:#93c5fd;
+      transform:translateY(-1px);
+    }
+    
+    .btn-action:disabled{
+      opacity:0.6;
+      cursor:not-allowed;
+      transform:none !important;
+    }
     
     /* HEADER DOS PEDIDOS */
     .pedidos-header{
@@ -652,6 +739,69 @@
         padding:5px 6px;
         font-size:11px;
       }
+      /* Cards dos pedidos em mobile extra pequeno */
+      .pedidos-grid{
+        gap:10px;
+        margin-top:12px;
+      }
+      .pedido-card{
+        padding:14px;
+      }
+      .card-top{
+        margin-bottom:12px;
+        flex-direction:column;
+        gap:8px;
+        align-items:flex-start;
+      }
+      .pedido-time{
+        font-size:11px;
+        padding:3px 6px;
+      }
+      .pedido-value{
+        font-size:16px;
+        padding:8px 12px;
+        margin-bottom:12px;
+      }
+      .pedido-cliente{
+        font-size:13px;
+        margin-bottom:10px;
+      }
+      .pedido-info{
+        grid-template-columns:1fr;
+        gap:8px;
+        margin-bottom:12px;
+      }
+      .info-label{
+        font-size:9px;
+      }
+      .info-value{
+        font-size:12px;
+      }
+      .pedido-status{
+        padding:4px 8px;
+        font-size:9px;
+        min-width:50px;
+      }
+      .status-main{
+        font-size:9px;
+        margin-bottom:1px;
+      }
+      .status-tipo{
+        font-size:7px;
+      }
+      .pedido-numero{
+        font-size:10px;
+        padding:3px 6px;
+      }
+      .pedido-actions{
+        margin-top:12px;
+        padding-top:12px;
+        gap:6px;
+      }
+      .btn-action{
+        padding:6px 8px;
+        font-size:10px;
+      }
     }
     
     /* BREAKPOINTS MOBILE SMALL */
@@ -719,6 +869,73 @@
       .chart-table-grid{
         gap:16px;
       }
+      /* Cards dos pedidos em mobile pequeno */
+      .pedidos-grid{
+        gap:12px;
+        margin-top:16px;
+      }
+      .pedido-card{
+        padding:16px;
+      }
+      .card-top{
+        margin-bottom:12px;
+        flex-direction:column;
+        gap:8px;
+        align-items:flex-start;
+      }
+      .pedido-time{
+        font-size:12px;
+        padding:4px 8px;
+      }
+      .pedido-value{
+        font-size:18px;
+        padding:10px 16px;
+        border-width:1px;
+        margin-bottom:12px;
+      }
+      .pedido-cliente{
+        font-size:14px;
+        margin-bottom:12px;
+      }
+      .pedido-info{
+        grid-template-columns:1fr;
+        gap:12px;
+        margin-bottom:16px;
+      }
+      .info-item{
+        gap:4px;
+      }
+      .info-label{
+        font-size:10px;
+      }
+      .info-value{
+        font-size:13px;
+      }
+      .pedido-status{
+        padding:5px 10px;
+        font-size:10px;
+        min-width:55px;
+      }
+      .status-main{
+        font-size:10px;
+        margin-bottom:1px;
+      }
+      .status-tipo{
+        font-size:8px;
+      }
+      .pedido-numero{
+        font-size:11px;
+        padding:3px 6px;
+      }
+      .pedido-actions{
+        margin-top:14px;
+        padding-top:12px;
+        gap:6px;
+      }
+      .btn-action{
+        padding:7px 10px;
+        font-size:11px;
+      }
     }
     
     /* BREAKPOINTS MOBILE LARGE */
@@ -758,6 +975,65 @@
       }
       .chart-table-grid{
         gap:18px;
+      }
+      /* Cards dos pedidos em mobile médio */
+      .pedidos-grid{
+        gap:16px;
+        margin-top:20px;
+      }
+      .pedido-card{
+        padding:20px;
+      }
+      .card-top{
+        margin-bottom:14px;
+      }
+      .pedido-time{
+        font-size:13px;
+        padding:5px 10px;
+      }
+      .pedido-value{
+        font-size:19px;
+        padding:10px 16px;
+        margin-bottom:14px;
+      }
+      .pedido-cliente{
+        font-size:15px;
+        margin-bottom:14px;
+      }
+      .pedido-info{
+        gap:14px;
+        margin-bottom:18px;
+      }
+      .info-label{
+        font-size:10px;
+      }
+      .info-value{
+        font-size:13px;
+      }
+      .pedido-status{
+        padding:6px 10px;
+        font-size:11px;
+        min-width:58px;
+      }
+      .status-main{
+        font-size:11px;
+        margin-bottom:1px;
+      }
+      .status-tipo{
+        font-size:9px;
+      }
+      .pedido-numero{
+        font-size:11px;
+        padding:4px 7px;
+      }
+      .pedido-actions{
+        margin-top:16px;
+        padding-top:14px;
+        gap:8px;
+      }
+      .btn-action{
+        padding:8px 12px;
+        font-size:12px;
       }
     }
     
@@ -1718,15 +1994,35 @@
         
         const dt = new Date(r.data_hora_pedido).toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' });
         const status = r.status || 'Pendente';
+        const tipoEntrega = r.tipo_entrega || r.entrega || 'Entrega';
         const statusClass = `status-${status.toLowerCase().replace(' ', '-').replace('ã', 'a')}`;
         
+        // Determinar se é entrega ou retirada baseado em múltiplos campos
+        let tipoDisplay = 'Entrega';
+        if (tipoEntrega && (
+          tipoEntrega.toLowerCase().includes('retirada') || 
+          tipoEntrega.toLowerCase().includes('balcao') || 
+          tipoEntrega.toLowerCase().includes('balcão') ||
+          tipoEntrega.toLowerCase().includes('retirar')
+        )) {
+          tipoDisplay = 'Retirada';
+        }
+        
+        const numeroPedido = r.codigo_pedido || 'S/N';
+        
         card.innerHTML = `
-          <div class="pedido-status ${statusClass}">${status}</div>
-          
-          <div class="pedido-header">
-            <div class="pedido-time">${dt}</div>
-            <div class="pedido-value">${currency(r.valor_total||0)}</div>
+          <div class="card-top">
+            <div class="pedido-info-top">
+              <div class="pedido-time">${dt}</div>
+              <div class="pedido-numero">#${numeroPedido}</div>
+            </div>
+            <div class="pedido-status ${statusClass}">
+              <div class="status-main">${status}</div>
+              <div class="status-tipo">${tipoDisplay}</div>
+            </div>
           </div>
+          
+          <div class="pedido-value">${currency(r.valor_total||0)}</div>
           
           <div class="pedido-cliente">
             ${r.nome_cliente || 'Cliente não informado'}
@@ -1741,6 +2037,17 @@
               <div class="info-label">Pagamento</div>
               <div class="info-value">${r.forma_pagamento || 'Não informado'}</div>
             </div>
+          </div>
+          
+          <div class="pedido-actions">
+            <button class="btn-action btn-confirmar" onclick="confirmarPedido('${numeroPedido}', this)" 
+                    ${status.toLowerCase() === 'confirmado' ? 'disabled' : ''}>
+              ${status.toLowerCase() === 'confirmado' ? '✓ Confirmado' : 'Confirmar'}
+            </button>
+            <button class="btn-action btn-entrega" onclick="enviarParaEntrega('${numeroPedido}', this)"
+                    ${status.toLowerCase() === 'entregue' || status.toLowerCase() === 'saiu para entrega' ? 'disabled' : ''}>
+              ${status.toLowerCase() === 'entregue' ? '✓ Entregue' : status.toLowerCase() === 'saiu para entrega' ? '🚚 Saiu' : 'Enviar'}
+            </button>
           </div>
         `;
         
@@ -1917,6 +2224,77 @@
   // Mostrar nome do usuário logado (opcional)
   if (currentUser && currentUser.usuario) {
     document.getElementById('logoutBtn').title = `Sair (${currentUser.usuario})`;
+  }
+
+  // Funções dos botões de ação dos pedidos
+  async function confirmarPedido(numeroPedido, botao) {
+    try {
+      console.log('Confirmando pedido:', numeroPedido);
+      botao.disabled = true;
+      botao.textContent = 'Confirmando...';
+      
+      // Atualizar no Supabase
+      const { error } = await supabase
+        .from(SOURCE)
+        .update({ status: 'Confirmado' })
+        .eq('codigo_pedido', numeroPedido);
+      
+      if (error) {
+        console.error('Erro ao confirmar pedido:', error);
+        botao.disabled = false;
+        botao.textContent = 'Confirmar';
+        alert('Erro ao confirmar pedido. Tente novamente.');
+        return;
+      }
+      
+      botao.textContent = '✓ Confirmado';
+      
+      // Atualizar a lista
+      setTimeout(() => {
+        refreshHoje();
+      }, 1000);
+      
+    } catch (error) {
+      console.error('Erro:', error);
+      botao.disabled = false;
+      botao.textContent = 'Confirmar';
+      alert('Erro ao confirmar pedido.');
+    }
+  }
+  
+  async function enviarParaEntrega(numeroPedido, botao) {
+    try {
+      console.log('Enviando para entrega:', numeroPedido);
+      botao.disabled = true;
+      botao.textContent = 'Enviando...';
+      
+      // Atualizar no Supabase
+      const { error } = await supabase
+        .from(SOURCE)
+        .update({ status: 'Saiu para entrega' })
+        .eq('codigo_pedido', numeroPedido);
+      
+      if (error) {
+        console.error('Erro ao enviar pedido:', error);
+        botao.disabled = false;
+        botao.textContent = 'Enviar';
+        alert('Erro ao enviar pedido. Tente novamente.');
+        return;
+      }
+      
+      botao.textContent = '🚚 Saiu';
+      
+      // Atualizar a lista
+      setTimeout(() => {
+        refreshHoje();
+      }, 1000);
+      
+    } catch (error) {
+      console.error('Erro:', error);
+      botao.disabled = false;
+      botao.textContent = 'Enviar';
+      alert('Erro ao enviar pedido.');
+    }
   }
 
   init();
