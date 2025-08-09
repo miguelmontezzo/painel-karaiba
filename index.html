@@ -31,7 +31,7 @@
     .bar{
       background:var(--red);
       color:#fff;
-      padding:12px 16px;
+      padding:16px;
       display:flex;
       align-items:center;
       gap:12px;
@@ -39,11 +39,12 @@
       top:0;
       z-index:100;
       box-shadow:0 2px 8px rgba(0,0,0,0.1);
+      min-height:80px;
     }
     .logo{
-      width:36px;
-      height:36px;
-      border-radius:8px;
+      width:40px;
+      height:40px;
+      border-radius:10px;
       background:linear-gradient(135deg,#ff8a80, #ff5252);
       background-image:url('https://i.ibb.co/Q37KgBh3/Ativo-1-2x.png');
       background-size:contain;
@@ -51,19 +52,36 @@
       background-position:center;
       flex-shrink:0;
     }
-    .bar-text{flex:1;min-width:0}
-    .bar-text strong{display:block;font-size:16px;margin-bottom:2px}
-    .bar-text div{font-size:12px;opacity:0.9}
+    .bar-text{
+      flex:1;
+      min-width:0;
+      margin-right:12px;
+    }
+    .bar-text strong{
+      display:block;
+      font-size:18px;
+      font-weight:700;
+      margin-bottom:4px;
+      line-height:1.2;
+    }
+    .bar-text div{
+      font-size:13px;
+      opacity:0.9;
+      line-height:1.3;
+    }
     
     /* PILL STATUS */
     .pill{
-      padding:6px 12px;
-      border-radius:999px;
+      padding:8px 14px;
+      border-radius:20px;
       background:rgba(255,255,255,0.2);
       color:#fff;
-      font-size:12px;
+      font-size:13px;
       font-weight:600;
       white-space:nowrap;
+      flex-shrink:0;
+      backdrop-filter:blur(10px);
+      border:1px solid rgba(255,255,255,0.3);
     }
     
     /* TABS MOBILE */
@@ -174,70 +192,160 @@
       gap:16px;
     }
     
-    /* TABELAS MOBILE */
+    /* TABELAS MOBILE FLUIDAS */
     .table-container{
       position:relative;
-      overflow-x:auto;
-      -webkit-overflow-scrolling:touch;
-      margin:-16px -16px 0;
-      padding:16px 16px 0;
+      overflow:hidden;
+      margin:-16px;
       border-radius:12px;
-      box-shadow:inset 0 0 0 1px var(--border);
+      box-shadow:0 2px 8px rgba(0,0,0,0.1);
     }
-    .table-container::before{
+    
+    /* WRAPPER DE SCROLL HORIZONTAL */
+    .table-scroll{
+      overflow-x:auto;
+      overflow-y:hidden;
+      -webkit-overflow-scrolling:touch;
+      padding:0;
+      position:relative;
+    }
+    
+    /* INDICADORES VISUAIS DE SCROLL */
+    .table-scroll::before{
       content:'';
       position:absolute;
       top:0;
       right:0;
       bottom:0;
-      width:20px;
-      background:linear-gradient(90deg, transparent, rgba(255,255,255,0.8));
+      width:30px;
+      background:linear-gradient(90deg, transparent, rgba(255,255,255,0.9));
       pointer-events:none;
-      z-index:2;
-    }
-    .table-container::after{
-      content:'← Deslize para ver mais';
-      position:absolute;
-      bottom:8px;
-      right:16px;
-      font-size:10px;
-      color:var(--muted);
-      background:rgba(255,255,255,0.9);
-      padding:4px 8px;
-      border-radius:4px;
       z-index:3;
+      opacity:0;
+      transition:opacity 0.3s ease;
     }
+    .table-scroll.has-more::before{
+      opacity:1;
+    }
+    
+    /* BARRA DE SCROLL CUSTOMIZADA */
+    .table-scroll::-webkit-scrollbar{
+      height:12px;
+    }
+    .table-scroll::-webkit-scrollbar-track{
+      background:#f1f5f9;
+      border-radius:6px;
+      margin:0 8px;
+    }
+    .table-scroll::-webkit-scrollbar-thumb{
+      background:var(--red);
+      border-radius:6px;
+      border:2px solid #f1f5f9;
+    }
+    .table-scroll::-webkit-scrollbar-thumb:hover{
+      background:#B71C1C;
+    }
+    
+    /* TABELA RESPONSIVA */
     table{
       width:100%;
-      border-collapse:collapse;
-      font-size:13px;
-      min-width:650px;
+      border-collapse:separate;
+      border-spacing:0;
+      font-size:14px;
+      min-width:700px;
       background:#fff;
+      border-radius:12px;
+      overflow:hidden;
     }
-    th,td{
-      padding:14px 12px;
-      border-bottom:1px solid var(--border);
-      text-align:left;
-      white-space:nowrap;
-    }
+    
+    /* CABEÇALHOS FIXOS */
     th{
-      background:#f8f9fa;
-      color:var(--muted);
+      background:var(--red);
+      color:#fff;
       font-weight:700;
       position:sticky;
       top:0;
-      z-index:1;
-      box-shadow:0 1px 0 var(--border);
+      z-index:2;
+      padding:16px 12px;
+      text-align:left;
       text-transform:uppercase;
-      font-size:11px;
+      font-size:12px;
       letter-spacing:0.5px;
+      box-shadow:0 2px 4px rgba(0,0,0,0.1);
+      border-bottom:none;
     }
+    
+    /* PRIMEIRA COLUNA FIXA */
+    th:first-child,
+    td:first-child{
+      position:sticky;
+      left:0;
+      z-index:1;
+      box-shadow:2px 0 4px rgba(0,0,0,0.1);
+    }
+    th:first-child{
+      z-index:3;
+      border-top-left-radius:12px;
+    }
+    
+    /* CÉLULAS DE DADOS */
     td{
       background:#fff;
-      font-size:13px;
+      padding:16px 12px;
+      border-bottom:1px solid #e2e8f0;
+      font-size:14px;
+      color:var(--text);
+      vertical-align:middle;
     }
+    
+    /* LINHAS ALTERNADAS */
+    tr:nth-child(even) td{
+      background:#f8fafc;
+    }
+    tr:nth-child(even) td:first-child{
+      background:#f8fafc;
+    }
+    
+    /* HOVER EFFECT */
     tr:hover td{
-      background:#f9fafb;
+      background:#e0f2fe !important;
+      transform:scale(1.01);
+      transition:all 0.2s ease;
+    }
+    
+    /* ÚLTIMA LINHA */
+    tr:last-child td:first-child{
+      border-bottom-left-radius:12px;
+    }
+    tr:last-child td:last-child{
+      border-bottom-right-radius:12px;
+    }
+    
+    /* COLUNAS ESPECÍFICAS */
+    td:nth-child(6), /* Total */
+    th:nth-child(6){
+      font-weight:700;
+      text-align:right;
+      color:var(--green);
+    }
+    
+    /* INDICADOR DE SCROLL */
+    .scroll-indicator{
+      position:absolute;
+      bottom:8px;
+      right:16px;
+      background:var(--red);
+      color:#fff;
+      padding:6px 12px;
+      border-radius:20px;
+      font-size:11px;
+      font-weight:600;
+      z-index:4;
+      opacity:0;
+      transition:opacity 0.3s ease;
+    }
+    .table-container.scrollable .scroll-indicator{
+      opacity:1;
     }
     
     /* BOTÕES */
@@ -440,6 +548,21 @@
       font-size:15px;
     }
     
+    /* BREAKPOINTS MOBILE SMALL */
+    @media(max-width:375px){
+      .bar{padding:12px}
+      .bar-text strong{font-size:16px}
+      .bar-text div{font-size:12px}
+      .pill{padding:6px 10px;font-size:12px}
+    }
+    
+    /* BREAKPOINTS MOBILE LARGE */
+    @media(min-width:414px) and (max-width:639px){
+      .bar{padding:16px 20px}
+      .bar-text strong{font-size:19px}
+      .container{padding:16px}
+    }
+    
     /* BREAKPOINTS TABLET */
     @media(min-width:640px){
       .container{padding:20px}
@@ -448,6 +571,8 @@
       .pedidos-grid{grid-template-columns:1fr 1fr}
       .logo{width:40px;height:40px}
       .kpi .val{font-size:24px}
+      .bar{padding:16px 24px}
+      .bar-text strong{font-size:20px}
     }
     
     /* BREAKPOINTS TABLET LARGE */
@@ -458,10 +583,18 @@
       .table-container{
         margin:0;
         padding:0;
-        box-shadow:none;
+        box-shadow:0 2px 8px rgba(0,0,0,0.1);
       }
-      .table-container::after{
+      .scroll-indicator{
         display:none;
+      }
+      .table-scroll::before{
+        display:none;
+      }
+      th:first-child,
+      td:first-child{
+        position:static;
+        box-shadow:none;
       }
       .filters.card input,
       .filters.card select{
@@ -639,12 +772,15 @@
         <div class="grid">
           <div><div id="chart-itens" class="chart-container" style="height:350px"></div></div>
           <div class="table-container" style="max-height:350px">
-            <table>
-              <thead><tr>
-                <th>#</th><th>Item</th><th>Qtd</th><th>Receita</th>
-              </tr></thead>
-              <tbody id="tbodyItens"></tbody>
-            </table>
+            <div class="table-scroll">
+              <table>
+                <thead><tr>
+                  <th>#</th><th>Item</th><th>Qtd</th><th>Receita</th>
+                </tr></thead>
+                <tbody id="tbodyItens"></tbody>
+              </table>
+            </div>
+            <div class="scroll-indicator">👈 Deslize para ver mais</div>
           </div>
         </div>
       </section>
@@ -655,12 +791,15 @@
           <button id="download" class="btn">📄 Baixar CSV</button>
         </div>
         <div class="table-container" style="max-height:360px">
+          <div class="table-scroll">
           <table>
-            <thead><tr>
+              <thead><tr>
               <th>Data</th><th>Cliente</th><th>Bairro</th><th>Pagamento</th><th>Status</th><th>Total (R$)</th>
             </tr></thead>
             <tbody id="tbody"></tbody>
           </table>
+          </div>
+          <div class="scroll-indicator">👈 Deslize para ver mais</div>
         </div>
       </section>
     </section>
@@ -1073,6 +1212,9 @@
     const rows = applyFilters();
     renderKPIs(rows); renderCharts(rows); renderTable(rows); renderItens(rows);
     q('#download').onclick = ()=> downloadCSV(rows);
+    
+    // Re-configurar indicadores após renderizar tabelas
+    setTimeout(setupTableScrollIndicators, 100);
   }
 
     // Pedidos de Hoje (listagem em cards)
@@ -1182,6 +1324,37 @@
     }, 300);
   });
 
+  // Função para gerenciar indicadores de scroll das tabelas
+  function setupTableScrollIndicators() {
+    const tableScrolls = document.querySelectorAll('.table-scroll');
+    
+    tableScrolls.forEach(scroll => {
+      const container = scroll.closest('.table-container');
+      const indicator = container.querySelector('.scroll-indicator');
+      
+      function updateScrollIndicator() {
+        const canScrollRight = scroll.scrollLeft < (scroll.scrollWidth - scroll.clientWidth - 10);
+        
+        if (canScrollRight) {
+          container.classList.add('scrollable');
+          scroll.classList.add('has-more');
+        } else {
+          container.classList.remove('scrollable');
+          scroll.classList.remove('has-more');
+        }
+      }
+      
+      // Evento de scroll
+      scroll.addEventListener('scroll', updateScrollIndicator);
+      
+      // Verificação inicial
+      setTimeout(updateScrollIndicator, 100);
+      
+      // Re-verificar quando a janela redimensiona
+      window.addEventListener('resize', updateScrollIndicator);
+    });
+  }
+
   async function init(){
     try{
       q('#status').textContent = 'Carregando…';
@@ -1189,6 +1362,10 @@
       DATA = raw.map(normalize);
       q('#status').textContent = `Conectado • ${DATA.length} pedidos`;
       hydrateFilters(); update(); refreshHoje();
+      
+      // Configurar indicadores de scroll das tabelas
+      setTimeout(setupTableScrollIndicators, 500);
+      
       if (window.timerHoje) clearInterval(window.timerHoje);
       window.timerHoje = setInterval(refreshHoje, 20000); // 20s
     }catch(e){
