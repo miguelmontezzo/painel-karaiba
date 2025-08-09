@@ -553,30 +553,39 @@
       font-weight:500;
     }
     
+    .status-container{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      align-items:flex-end;
+    }
+    
     .pedido-status{
-      padding:6px 10px;
+      padding:6px 12px;
       border-radius:12px;
       font-size:11px;
-      font-weight:600;
+      font-weight:700;
       color:#fff;
       text-transform:uppercase;
       letter-spacing:0.3px;
       text-align:center;
-      min-width:60px;
+      min-width:80px;
       box-shadow:0 2px 8px rgba(0,0,0,0.15);
       flex-shrink:0;
     }
     
-    .status-main{
-      font-size:11px;
-      font-weight:700;
-      margin-bottom:2px;
-    }
-    
-    .status-tipo{
-      font-size:9px;
-      font-weight:500;
-      opacity:0.9;
+    .pedido-tipo{
+      padding:4px 8px;
+      border-radius:8px;
+      font-size:10px;
+      font-weight:600;
+      background:#f1f5f9;
+      color:#475569;
+      text-transform:uppercase;
+      letter-spacing:0.3px;
+      text-align:center;
+      border:1px solid #e2e8f0;
+      min-width:60px;
     }
     
     .status-entregue{background:#2E7D32}
@@ -2010,15 +2019,41 @@
         
         const numeroPedido = r.codigo_pedido || 'S/N';
         
+        // Determinar texto do botão baseado no tipo de entrega
+        let textoBotaoEntrega = 'Enviar';
+        let iconeBotaoEntrega = '';
+        
+        if (tipoDisplay === 'Retirada') {
+          if (status.toLowerCase() === 'entregue') {
+            textoBotaoEntrega = '✓ Retirado';
+          } else if (status.toLowerCase() === 'saiu para entrega') {
+            textoBotaoEntrega = '✓ Pronto';
+          } else {
+            textoBotaoEntrega = 'Pronto p/ Retirada';
+          }
+        } else {
+          if (status.toLowerCase() === 'entregue') {
+            textoBotaoEntrega = '✓ Entregue';
+          } else if (status.toLowerCase() === 'saiu para entrega') {
+            textoBotaoEntrega = '🚚 Saiu';
+          } else {
+            textoBotaoEntrega = 'Enviar';
+          }
+        }
+
         card.innerHTML = `
           <div class="card-top">
             <div class="pedido-info-top">
               <div class="pedido-time">${dt}</div>
               <div class="pedido-numero">#${numeroPedido}</div>
             </div>
-            <div class="pedido-status ${statusClass}">
-              <div class="status-main">${status}</div>
-              <div class="status-tipo">${tipoDisplay}</div>
+            <div class="status-container">
+              <div class="pedido-status ${statusClass}">
+                ${status}
+              </div>
+              <div class="pedido-tipo">
+                ${tipoDisplay}
+              </div>
             </div>
           </div>
           
@@ -2044,9 +2079,9 @@
                     ${status.toLowerCase() === 'confirmado' ? 'disabled' : ''}>
               ${status.toLowerCase() === 'confirmado' ? '✓ Confirmado' : 'Confirmar'}
             </button>
-            <button class="btn-action btn-entrega" onclick="enviarParaEntrega('${numeroPedido}', this)"
+            <button class="btn-action btn-entrega" onclick="enviarParaEntrega('${numeroPedido}', '${tipoDisplay}', this)"
                     ${status.toLowerCase() === 'entregue' || status.toLowerCase() === 'saiu para entrega' ? 'disabled' : ''}>
-              ${status.toLowerCase() === 'entregue' ? '✓ Entregue' : status.toLowerCase() === 'saiu para entrega' ? '🚚 Saiu' : 'Enviar'}
+              ${textoBotaoEntrega}
             </button>
           </div>
         `;
@@ -2262,27 +2297,43 @@
     }
   }
   
-  async function enviarParaEntrega(numeroPedido, botao) {
+  async function enviarParaEntrega(numeroPedido, tipoEntrega, botao) {
     try {
-      console.log('Enviando para entrega:', numeroPedido);
+      console.log('Processando pedido:', numeroPedido, 'Tipo:', tipoEntrega);
       botao.disabled = true;
-      botao.textContent = 'Enviando...';
+      
+      let novoStatus = '';
+      let textoProcessando = '';
+      
+      if (tipoEntrega === 'Retirada') {
+        novoStatus = 'Saiu para entrega'; // Mantém o mesmo status, mas o texto será diferente
+        textoProcessando = 'Preparando...';
+      } else {
+        novoStatus = 'Saiu para entrega';
+        textoProcessando = 'Enviando...';
+      }
+      
+      botao.textContent = textoProcessando;
       
       // Atualizar no Supabase
       const { error } = await supabase
         .from(SOURCE)
-        .update({ status: 'Saiu para entrega' })
+        .update({ status: novoStatus })
         .eq('codigo_pedido', numeroPedido);
       
       if (error) {
-        console.error('Erro ao enviar pedido:', error);
+        console.error('Erro ao processar pedido:', error);
         botao.disabled = false;
-        botao.textContent = 'Enviar';
-        alert('Erro ao enviar pedido. Tente novamente.');
+        botao.textContent = tipoEntrega === 'Retirada' ? 'Pronto p/ Retirada' : 'Enviar';
+        alert('Erro ao processar pedido. Tente novamente.');
         return;
       }
       
-      botao.textContent = '🚚 Saiu';
+      if (tipoEntrega === 'Retirada') {
+        botao.textContent = '✓ Pronto';
+      } else {
+        botao.textContent = '🚚 Saiu';
+      }
       
       // Atualizar a lista
       setTimeout(() => {
@@ -2292,8 +2343,8 @@
     } catch (error) {
       console.error('Erro:', error);
       botao.disabled = false;
-      botao.textContent = 'Enviar';
-      alert('Erro ao enviar pedido.');
+      botao.textContent = tipoEntrega === 'Retirada' ? 'Pronto p/ Retirada' : 'Enviar';
+      alert('Erro ao processar pedido.');
     }
   }
 
