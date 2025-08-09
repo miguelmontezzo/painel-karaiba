@@ -757,12 +757,16 @@
     
         /* CHART CONTAINERS */
     .chart-container{
-      height:300px;
+      height:280px; /* Altura otimizada sem título interno */
       width:100%;
     }
 
     @media(min-width:640px){
-      .chart-container{height:320px}
+      .chart-container{height:300px} /* Altura maior em tablet */
+    }
+    
+    @media(min-width:950px){
+      .chart-container{height:320px} /* Altura maior em desktop */
     }
     
     /* SEÇÕES DE CHART E TABLE */
@@ -902,10 +906,30 @@
       </section>
 
       <section class="grid">
-        <div class="card"><div id="chart-pedidos" class="chart-container"></div></div>
-        <div class="card"><div id="chart-fat" class="chart-container"></div></div>
-        <div class="card"><div id="chart-bairros" class="chart-container"></div></div>
-        <div class="card"><div id="chart-pagamento" class="chart-container"></div></div>
+        <div class="card">
+          <div class="section-header">
+            <strong>Pedidos por Dia</strong>
+          </div>
+          <div id="chart-pedidos" class="chart-container"></div>
+        </div>
+        <div class="card">
+          <div class="section-header">
+            <strong>Faturamento por Dia</strong>
+          </div>
+          <div id="chart-fat" class="chart-container"></div>
+        </div>
+        <div class="card">
+          <div class="section-header">
+            <strong>Pedidos por Bairro</strong>
+          </div>
+          <div id="chart-bairros" class="chart-container"></div>
+        </div>
+        <div class="card">
+          <div class="section-header">
+            <strong>Formas de Pagamento</strong>
+          </div>
+          <div id="chart-pagamento" class="chart-container"></div>
+        </div>
       </section>
 
       <!-- SEÇÃO ITENS MAIS PEDIDOS -->
@@ -1082,7 +1106,6 @@
       marker: { color: '#1E88E5' }
     }], {
       ...mobileLayout,
-      title: isMobile ? '' : 'Pedidos por Dia',
       xaxis: { tickangle: isMobile ? -45 : -30, tickfont: { size: isMobile ? 9 : 11 } }
     }, mobileConfig);
     
@@ -1097,7 +1120,6 @@
       marker: { color: '#2E7D32' }
     }], {
       ...mobileLayout,
-      title: isMobile ? '' : 'Faturamento por Dia',
       xaxis: { tickangle: isMobile ? -45 : -30, tickfont: { size: isMobile ? 9 : 11 } }
     }, mobileConfig);
     
@@ -1112,7 +1134,6 @@
       marker: { color: '#C62828' }
     }], {
       ...mobileLayout,
-      title: isMobile ? '' : 'Pedidos por Bairro',
       margin: { t: 20, l: 30, r: 20, b: isMobile ? 60 : 80 },
       xaxis: { 
         tickangle: isMobile ? -45 : -25, 
@@ -1130,7 +1151,6 @@
       textfont: { size: isMobile ? 10 : 12 }
     }], {
       ...mobileLayout,
-      title: isMobile ? '' : 'Formas de Pagamento',
       legend: { 
         orientation: 'h',
         y: isMobile ? -0.2 : -0.1,
